@@ -1,16 +1,17 @@
 <?php
 namespace Cvut\Fit\BiPwt\BlogBundle\Tests\Entity;
 
+use Cvut\Fit\BiPwt\BlogBundle\Entity\Comment;
+use Cvut\Fit\BiPwt\BlogBundle\Entity\File;
+use Cvut\Fit\BiPwt\BlogBundle\Entity\Post;
+
 class FileTest extends EntityTestcase {
 
 	/**
 	 * setup - vytvoreni instance podle interfacu FileInterface
 	 */
 	public function setUp() {
-		global $interfaceToClassMap;
-
-		$class = $interfaceToClassMap->getClass('Cvut\Fit\BiPwt\BlogBundle\Entity\FileInterface');
-		$this->object = new $class;
+		$this->object = new File();
 	}
 
 	/**
@@ -31,10 +32,7 @@ class FileTest extends EntityTestcase {
 	 * test getteru a setteru pro atribut post
 	 */
 	public function testPost() {
-		global $interfaceToClassMap;
-
-		$class = $interfaceToClassMap->getClass('Cvut\Fit\BiPwt\BlogBundle\Entity\PostInterface');
-		$post = new $class;
+		$post = new Post();
 
 		$this->_testGetterSetter('getPost', 'setPost', $post);
 	}
@@ -64,10 +62,7 @@ class FileTest extends EntityTestcase {
 	 * test getteru a setteru pro atribut comment
 	 */
 	public function testComment() {
-		global $interfaceToClassMap;
-
-		$class = $interfaceToClassMap->getClass('Cvut\Fit\BiPwt\BlogBundle\Entity\CommentInterface');
-		$comment = new $class;
+		$comment = new Comment();
 
 		$this->_testGetterSetter('getComment', 'setComment', $comment);
 	}

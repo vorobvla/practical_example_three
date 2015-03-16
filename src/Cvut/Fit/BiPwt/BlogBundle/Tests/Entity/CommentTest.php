@@ -1,16 +1,18 @@
 <?php
 namespace Cvut\Fit\BiPwt\BlogBundle\Tests\Entity;
 
+use Cvut\Fit\BiPwt\BlogBundle\Entity\Comment;
+use Cvut\Fit\BiPwt\BlogBundle\Entity\File;
+use Cvut\Fit\BiPwt\BlogBundle\Entity\Post;
+use Cvut\Fit\BiPwt\BlogBundle\Entity\User;
+
 class CommentTest extends EntityTestcase {
 
 	/**
 	 * setup - vytvoreni instance podle interfacu CommentInterface
 	 */
 	public function setUp() {
-		global $interfaceToClassMap;
-
-		$class = $interfaceToClassMap->getClass('Cvut\Fit\BiPwt\BlogBundle\Entity\CommentInterface');
-		$this->object = new $class;
+		$this->object = new Comment();
 	}
 
 	/**
@@ -24,10 +26,7 @@ class CommentTest extends EntityTestcase {
 	 * test getteru a setteru pro atribut author
 	 */
 	public function testAuthor() {
-		global $interfaceToClassMap;
-
-		$class = $interfaceToClassMap->getClass('Cvut\Fit\BiPwt\BlogBundle\Entity\UserInterface');
-		$user = new $class;
+		$user = new User();
 
 		$this->_testGetterSetter('getAuthor', 'setAuthor', $user);
 	}
@@ -36,10 +35,7 @@ class CommentTest extends EntityTestcase {
 	 * test getteru a setteru pro atribut post
 	 */
 	public function testPost() {
-		global $interfaceToClassMap;
-
-		$class = $interfaceToClassMap->getClass('Cvut\Fit\BiPwt\BlogBundle\Entity\PostInterface');
-		$post = new $class;
+		$post = new Post();
 
 		$this->_testGetterSetter('getPost', 'setPost', $post);
 	}
@@ -48,12 +44,18 @@ class CommentTest extends EntityTestcase {
 	 * test getteru a setteru pro atribut parent
 	 */
 	public function testParent() {
-		global $interfaceToClassMap;
-
-		$class = $interfaceToClassMap->getClass('Cvut\Fit\BiPwt\BlogBundle\Entity\CommentInterface');
-		$comment = new $class;
+		$comment = new Comment();
 
 		$this->_testGetterSetter('getParent', 'setParent', $comment);
+	}
+
+	/**
+	 * test add/remove a gettru pro kolekci children
+	 */
+	public function testTag() {
+		$comment = new Comment();
+
+		$this->_testAddRemove('addChild', 'removeChild', 'getChildren', $comment);
 	}
 
 	/**
@@ -81,10 +83,7 @@ class CommentTest extends EntityTestcase {
 	 * test add/remove a gettru pro kolekci files
 	 */
 	public function testFile() {
-		global $interfaceToClassMap;
-
-		$class = $interfaceToClassMap->getClass('Cvut\Fit\BiPwt\BlogBundle\Entity\FileInterface');
-		$file = new $class;
+		$file = new File();
 
 		$this->_testAddRemove('addFile', 'removeFile', 'getFiles', $file);
 	}

@@ -1,26 +1,26 @@
 <?php
 namespace Cvut\Fit\BiPwt\BlogBundle\Tests\Entity;
 
+use Cvut\Fit\BiPwt\BlogBundle\Entity\Comment;
+use Cvut\Fit\BiPwt\BlogBundle\Entity\File;
+use Cvut\Fit\BiPwt\BlogBundle\Entity\Post;
+use Cvut\Fit\BiPwt\BlogBundle\Entity\Tag;
+use Cvut\Fit\BiPwt\BlogBundle\Entity\User;
+
 class PostTest extends EntityTestcase {
 
 	/**
 	 * setup - vytvoreni instance podle interfacu PostInterface
 	 */
 	public function setUp() {
-		global $interfaceToClassMap;
-
-		$class = $interfaceToClassMap->getClass('Cvut\Fit\BiPwt\BlogBundle\Entity\PostInterface');
-		$this->object = new $class;
+		$this->object = new Post();
 	}
 
 	/**
 	 * test getteru a setteru pro atribut author
 	 */
 	public function testAuthor() {
-		global $interfaceToClassMap;
-
-		$class = $interfaceToClassMap->getClass('Cvut\Fit\BiPwt\BlogBundle\Entity\UserInterface');
-		$user = new $class;
+		$user = new User();
 
 		$this->_testGetterSetter('getAuthor', 'setAuthor', $user);
 	}
@@ -84,10 +84,7 @@ class PostTest extends EntityTestcase {
 	 * test add/remove a gettru pro kolekci files
 	 */
 	public function testFile() {
-		global $interfaceToClassMap;
-
-		$class = $interfaceToClassMap->getClass('Cvut\Fit\BiPwt\BlogBundle\Entity\FileInterface');
-		$file = new $class;
+		$file = new File();
 
 		$this->_testAddRemove('addFile', 'removeFile', 'getFiles', $file);
 	}
@@ -96,10 +93,7 @@ class PostTest extends EntityTestcase {
 	 * test add/remove a gettru pro kolekci tags
 	 */
 	public function testTag() {
-		global $interfaceToClassMap;
-
-		$class = $interfaceToClassMap->getClass('Cvut\Fit\BiPwt\BlogBundle\Entity\TagInterface');
-		$tag = new $class;
+		$tag = new Tag();
 
 		$this->_testAddRemove('addTag', 'removeTag', 'getTags', $tag);
 	}
@@ -108,10 +102,7 @@ class PostTest extends EntityTestcase {
 	 * test add/remove a gettru pro kolekci comments
 	 */
 	public function testComment() {
-		global $interfaceToClassMap;
-
-		$class = $interfaceToClassMap->getClass('Cvut\Fit\BiPwt\BlogBundle\Entity\CommentInterface');
-		$comment = new $class;
+		$comment = new Comment();
 
 		$this->_testAddRemove('addComment', 'removeComment', 'getComments', $comment);
 	}

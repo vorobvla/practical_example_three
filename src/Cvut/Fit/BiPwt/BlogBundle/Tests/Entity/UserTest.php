@@ -1,16 +1,16 @@
 <?php
 namespace Cvut\Fit\BiPwt\BlogBundle\Tests\Entity;
 
+use Cvut\Fit\BiPwt\BlogBundle\Entity\Post;
+use Cvut\Fit\BiPwt\BlogBundle\Entity\User;
+
 class UserTest extends EntityTestcase {
 
 	/**
 	 * setup - vytvoreni instance podle interfacu CommentInterface
 	 */
 	public function setUp() {
-		global $interfaceToClassMap;
-
-		$class = $interfaceToClassMap->getClass('Cvut\Fit\BiPwt\BlogBundle\Entity\UserInterface');
-		$this->object = new $class;
+		$this->object = new User();
 	}
 
 	/**
@@ -32,10 +32,7 @@ class UserTest extends EntityTestcase {
 	 * test add/remove a gettru pro kolekci posts
 	 */
 	public function testPost() {
-		global $interfaceToClassMap;
-
-		$class = $interfaceToClassMap->getClass('Cvut\Fit\BiPwt\BlogBundle\Entity\PostInterface');
-		$post = new $class;
+		$post = new Post();
 
 		$this->_testAddRemove('addPost', 'removePost', 'getPosts', $post);
 	}
