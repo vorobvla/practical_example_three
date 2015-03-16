@@ -55,7 +55,7 @@ interface BlogInterface {
      *
      * @return Collection<PostInterface>
      */
-    public function findAllPost();
+    public function findAllPosts();
 
     /**
      * Najde prispevky podle kriterii a vrati
@@ -149,9 +149,9 @@ interface BlogInterface {
     /**
      * Odebere od prispevku soubor
      *
-     * @param $file
+     * @param FileInterface $file
      * @return PostInterface
      */
-    public function deleteFile($file);
+    public function deleteFile(FileInterface $file);
 
 }
