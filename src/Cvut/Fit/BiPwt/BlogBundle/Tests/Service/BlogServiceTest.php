@@ -1,68 +1,41 @@
 <?php
 namespace Cvut\Fit\BiPwt\BlogBundle\Tests\Service;
 
-use Cvut\Fit\BiPwt\BlogBundle\Exception\ItemNotFoundException;
+use Cvut\Fit\BiPwt\BlogBundle\Entity\Comment;
+use Cvut\Fit\BiPwt\BlogBundle\Entity\File;
+use Cvut\Fit\BiPwt\BlogBundle\Entity\Post;
+use Cvut\Fit\BiPwt\BlogBundle\Entity\Tag;
+use Cvut\Fit\BiPwt\BlogBundle\Service\BlogInterface;
+use Cvut\Fit\BiPwt\BlogBundle\Service\UserInterface;
 use Doctrine\Common\Collections\Criteria;
 
 class BlogServiceTest extends ServiceTestcase {
 
-	/**
-	 * @var string - implementace PostInterface
-	 */
-	protected $postClass;
+	/** @var BlogInterface - implementace Service/BlogInterface */
+	protected $service;
 
-	/**
-	 * @var string - implementace TagInterface
-	 */
-	protected $tagClass;
-
-	/**
-	 * @var string - implementace CommentInterface
-	 */
-	protected $commentClass;
-
-	/**
-	 * @var string - implementace FileInterface
-	 */
-	protected $fileClass;
-
-	/**
-	 * @var object - implementace Service/UserInterface
-	 */
+	/** @var UserInterface - implementace Service/UserInterface */
 	protected $userService;
 
 	/**
 	 * setup - vytvoreni instance podle interfacu UserInterface
 	 */
 	public function setUp() {
-		global $interfaceToClassMap;
-		global $em;
+		$client = static::createClient();
+		$container = $client->getContainer();
 
-		$this->assertInstanceOf('Cvut\Fit\BiPwt\BlogBundle\DependencyInjection\InterfaceToClassMap', $interfaceToClassMap, "Interface to class map object is invalid.");
+		$this->service = $container->get('cvut_fit_ict_bipwt_blog_service');
 
-		$class = $interfaceToClassMap->getClass('Cvut\Fit\BiPwt\BlogBundle\Service\BlogInterface');
-		//FIXME parametry kontruktoru
-		$this->service = new $class($interfaceToClassMap);
-		//$this->service = new $class($em);
-
-		$this->postClass = $interfaceToClassMap->getClass('Cvut\Fit\BiPwt\BlogBundle\Entity\PostInterface');
-		$this->tagClass = $interfaceToClassMap->getClass('Cvut\Fit\BiPwt\BlogBundle\Entity\TagInterface');
-		$this->commentClass = $interfaceToClassMap->getClass('Cvut\Fit\BiPwt\BlogBundle\Entity\CommentInterface');
-		$this->fileClass = $interfaceToClassMap->getClass('Cvut\Fit\BiPwt\BlogBundle\Entity\FileInterface');
-
-		$class = $interfaceToClassMap->getClass('Cvut\Fit\BiPwt\BlogBundle\Service\UserInterface');
-		//FIXME parametry kontruktoru
-		$this->userService = new $class($interfaceToClassMap);
-		//$this->userService = new $class($em);
+		$this->userService = $container->get('cvut_fit_ict_bipwt_user_service');
 	}
 
 	/**
 	 * pomocna metoda pro vytvoreni instance prispevku
-	 * @return mixed
+	 * @return Post
 	 */
 	protected function _newPost($id, $title, $text, $author) {
 		$now = new \DateTime;
-		$post = new $this->postClass;
+		$post = new Post();
 		$post->setId($id);
 		$post->setTitle($title);
 		$post->setText($text);
@@ -79,7 +52,7 @@ class BlogServiceTest extends ServiceTestcase {
 	 * pomocna metoda pro vytvoreni prispevku
 	 * @param $id
 	 * @param $title
-	 * @return mixed
+	 * @return Post
 	 */
 	protected function _createPost($id, $title, $text, $author) {
 		$post = $this->_newPost($id, $title, $text, $author);
@@ -91,10 +64,10 @@ class BlogServiceTest extends ServiceTestcase {
 
 	/**
 	 * pomocna metoda pro vytvoreni instance tag
-	 * @return mixed
+	 * @return Tag
 	 */
 	protected function _newTag($id, $title) {
-		$tag = new $this->tagClass;
+		$tag = new Tag();
 		$tag->setId($id);
 		$tag->setTitle($title);
 
@@ -105,7 +78,7 @@ class BlogServiceTest extends ServiceTestcase {
 	 * pomocna metoda pro vytvoreni tagu
 	 * @param $id
 	 * @param $title
-	 * @return mixed
+	 * @return Tag
 	 */
 	protected function _createTag($id, $title) {
 		$tag = $this->_newTag($id, $title);
@@ -121,7 +94,7 @@ class BlogServiceTest extends ServiceTestcase {
 	 */
 	protected function _newComment($id, $text, $author) {
 		$now = new \DateTime;
-		$comment = new $this->commentClass;
+		$comment = new Comment();
 		$comment->setId($id);
 		$comment->setText($text);
 		$comment->setAuthor($author);
@@ -138,7 +111,7 @@ class BlogServiceTest extends ServiceTestcase {
 	 */
 	protected function _newFile($id, $name) {
 		$now = new \DateTime;
-		$file = new $this->fileClass;
+		$file = new File();
 		$file->setId($id);
 		$file->setName($name);
 		$file->setData('dummy data');
@@ -180,7 +153,7 @@ class BlogServiceTest extends ServiceTestcase {
 		$tag2 = $this->service->deleteTag($tag);
 
 		$this->assertTrue($tag == $tag, "'deleteTag' method doesn't return proper object.");
-		$this->assertInstanceOf($this->tagClass, $tag2, "'deleteTag' method doesn't return object of proper class.");
+		$this->assertInstanceOf('Cvut\Fit\BiPwt\BlogBundle\Entity\Tag', $tag2, "'deleteTag' method doesn't return object of proper class.");
 
 		try {
 			$tag3 = $this->service->findTag($id);
@@ -231,8 +204,8 @@ class BlogServiceTest extends ServiceTestcase {
 		$this->assertInstanceOf($collectionClass, $tags, "'findTagBy' method doesn't return object of proper class.");
 
 		foreach($tags as $tag2) {
-			$this->assertInstanceOf($this->tagClass, $tag2, "Item isn't object of proper class.");
-			$this->assertTrue($tag2->getTitle() == $title, "Tag title for item #{$id} is improper.");
+			$this->assertInstanceOf('Cvut\Fit\BiPwt\BlogBundle\Entity\Tag', $tag2, "Item isn't object of proper class.");
+			$this->assertTrue($tag2->getTitle() == $title, "Tag title for item #{$tag2->getId()} is improper.");
 		}
 
 		//test na operator 'contains'
@@ -245,8 +218,36 @@ class BlogServiceTest extends ServiceTestcase {
 		$this->assertInstanceOf($collectionClass, $tags, "'findTagBy' method doesn't return object of proper class.");
 
 		foreach($tags as $tag2) {
-			$this->assertInstanceOf($this->tagClass, $tag2, "Item isn't object of proper class.");
-			$this->assertTrue(strstr($tag2->getTitle(), $str) !== FALSE, "Item #{$id} doesn't fit criterion.");
+			$this->assertInstanceOf('Cvut\Fit\BiPwt\BlogBundle\Entity\Tag', $tag2, "Item isn't object of proper class.");
+			$this->assertTrue(strstr($tag2->getTitle(), $str) !== FALSE, "Item #{$tag2->getId()} doesn't fit criterion.");
+		}
+	}
+
+	/**
+	 * test metody pro nalezeni vsech tagu
+	 */
+	public function testFindAllTags() {
+		$data = [
+			5 => 'movie',
+			6 => 'demos',
+			7 => 'art',
+		];
+		$collectionClass = 'Doctrine\Common\Collections\Collection';
+
+		$newData = [];
+		foreach($data as $id => $title) {
+			$tag = $this->_createTag($id, $title);
+			//vytvorime si zaznamy s novym id
+			$newData[$tag->getId()] = $title;
+		}
+
+		//test
+		$tags = $this->service->findAllTags();
+		$this->assertInstanceOf($collectionClass, $tags, "'findAllTags' method doesn't return object of proper class.");
+		$this->assertCount(count($newData), $tags,"'findAllTags' method doesn't return proper number of items.");
+
+		foreach($tags as $tag2) {
+			$this->assertInstanceOf('Cvut\Fit\BiPwt\BlogBundle\Entity\Tag', $tag2, "Item isn't object of proper class.");
 		}
 	}
 
@@ -288,7 +289,7 @@ class BlogServiceTest extends ServiceTestcase {
 		$post2 = $this->service->deletePost($post);
 
 		$this->assertTrue($post == $post, "'deletePost' method doesn't return proper object.");
-		$this->assertInstanceOf($this->postClass, $post2, "'deletePost' method doesn't return object of proper class.");
+		$this->assertInstanceOf('Cvut\Fit\BiPwt\BlogBundle\Entity\Post', $post2, "'deletePost' method doesn't return object of proper class.");
 
 		try {
 			$post3 = $this->service->findPost($id);
@@ -311,6 +312,37 @@ class BlogServiceTest extends ServiceTestcase {
 
 		$this->assertTrue($post == $post2, "'findPost' method doesn't return proper instance (equal).");
 		$this->assertTrue($post === $post2, "'findPost' method doesn't return proper instance (identity).");
+	}
+
+	/**
+	 * test metody pro nalezeni vsech prispevku
+	 */
+	public function testFindAllPosts() {
+		$author1 = $this->userService->create(6,'Blogger 6');
+		$author2 = $this->userService->create(7,'Se7en');
+		$data = [
+			5 => ['sample post title 5', 'sample post content text...', $author1],
+			6 => ['another post title', 'text text text', $author2],
+			7 => ['dummy post title', 'this is dummy post', $author1]
+		];
+		$collectionClass = 'Doctrine\Common\Collections\Collection';
+
+		$newData = [];
+		foreach($data as $id => $item) {
+			list($title, $text, $author) = $item;
+			$post = $this->_createPost($id, $title, $text, $author);
+			//vytvorime si zaznamy s novym id
+			$newData[$post->getId()] = $item;
+		}
+
+		//test
+		$posts = $this->service->findAllPosts();
+		$this->assertInstanceOf($collectionClass, $posts, "'findAllPosts' method doesn't return object of proper class.");
+		$this->assertCount(count($newData), $posts, "'findAllPosts' method doesn't return proper number of items.");
+
+		foreach($posts as $post2) {
+			$this->assertInstanceOf('Cvut\Fit\BiPwt\BlogBundle\Entity\Post', $post2, "Item isn't object of proper class.");
+		}
 	}
 
 	/**
@@ -343,8 +375,8 @@ class BlogServiceTest extends ServiceTestcase {
 		$this->assertInstanceOf($collectionClass, $posts, "'findPostBy' method doesn't return object of proper class.");
 
 		foreach($posts as $post2) {
-			$this->assertInstanceOf($this->postClass, $post2, "Item isn't object of proper class.");
-			$this->assertTrue($post2->getTitle() == $title, "Post title for item #{$id} is improper.");
+			$this->assertInstanceOf('Cvut\Fit\BiPwt\BlogBundle\Entity\Post', $post2, "Item isn't object of proper class.");
+			$this->assertTrue($post2->getTitle() == $title, "Post title for item #{$post2->getId()} is improper.");
 		}
 
 		//test na operator 'contains'
@@ -357,8 +389,8 @@ class BlogServiceTest extends ServiceTestcase {
 		$this->assertInstanceOf($collectionClass, $posts, "'findpostBy' method doesn't return object of proper class.");
 
 		foreach($posts as $post2) {
-			$this->assertInstanceOf($this->postClass, $post2, "Item isn't object of proper class.");
-			$this->assertTrue(strstr($post2->getText(), $str) !== FALSE, "Item #{$id} doesn't fit criterion.");
+			$this->assertInstanceOf('Cvut\Fit\BiPwt\BlogBundle\Entity\Post', $post2, "Item isn't object of proper class.");
+			$this->assertTrue(strstr($post2->getText(), $str) !== FALSE, "Item #{$post2->getId()} doesn't fit criterion.");
 		}
 	}
 

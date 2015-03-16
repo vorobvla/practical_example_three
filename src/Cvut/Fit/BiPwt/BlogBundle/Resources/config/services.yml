@@ -1,1 +1,11 @@
+# timto lze vymenit implementaci sluzeb (napr. pro unit-testovani)
+parameters:
+  blog_service_class: Cvut\Fit\BiPwt\BlogBundle\Service\MemoryBlogService
+  user_service_class: Cvut\Fit\BiPwt\BlogBundle\Service\MemoryUserService
+
 services:
+  cvut_fit_ict_bipwt_blog_service:
+    class: %blog_service_class%
+
+  cvut_fit_ict_bipwt_user_service:
+    class: %user_service_class%

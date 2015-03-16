@@ -1,31 +1,25 @@
 <?php
 namespace Cvut\Fit\BiPwt\BlogBundle\Tests\Service;
 
-use Cvut\Fit\BiPwt\BlogBundle\Exception\ItemNotFoundException;
+use Cvut\Fit\BiPwt\BlogBundle\Entity\User;
+use Cvut\Fit\BiPwt\BlogBundle\Service\UserInterface;
 use Doctrine\Common\Collections\Criteria;
 
 class UserServiceTest extends ServiceTestcase {
 
 	/**
-	 * @var string - implementace UserInterface
+	 * @var UserInterface - implementace Service/UserInterface
 	 */
-	protected $userClass;
+	protected $service;
 
 	/**
 	 * setup - vytvoreni instance podle interfacu UserInterface
 	 */
 	public function setUp() {
-		global $interfaceToClassMap;
-		global $em;
+		$client = static::createClient();
+		$container = $client->getContainer();
 
-		$this->assertInstanceOf('Cvut\Fit\BiPwt\BlogBundle\DependencyInjection\InterfaceToClassMap', $interfaceToClassMap, "Interface to class map object is invalid.");
-
-		$class = $interfaceToClassMap->getClass('Cvut\Fit\BiPwt\BlogBundle\Service\UserInterface');
-		//FIXME parametry kontruktoru
-		$this->service = new $class($interfaceToClassMap);
-		//$this->service = new $class($em);
-
-		$this->userClass = $interfaceToClassMap->getClass('Cvut\Fit\BiPwt\BlogBundle\Entity\UserInterface');
+		$this->service = $container->get('cvut_fit_ict_bipwt_user_service');
 	}
 
 	/**
@@ -33,7 +27,7 @@ class UserServiceTest extends ServiceTestcase {
 	 */
 	protected function _create($id, $name) {
 		$user = $this->service->create($id, $name);
-		$this->assertInstanceOf($this->userClass, $user, "'create' method doesn't return object of proper class.");
+		$this->assertInstanceOf('Cvut\Fit\BiPwt\BlogBundle\Entity\User', $user, "'create' method doesn't return object of proper class.");
 		//$this->assertTrue($user->getId() == $id, "User doesn't have requested ID.");
 		$this->assertTrue($user->getName() == $name, "User doesn't have requested name.");
 
@@ -72,7 +66,7 @@ class UserServiceTest extends ServiceTestcase {
 		$user2 = $this->service->delete($user);
 
 		$this->assertTrue($user == $user2, "'delete' method doesn't return proper object.");
-		$this->assertInstanceOf($this->userClass, $user2, "'delete' method doesn't return object of proper class.");
+		$this->assertInstanceOf('Cvut\Fit\BiPwt\BlogBundle\Entity\User', $user2, "'delete' method doesn't return object of proper class.");
 
 		try {
 			$user3 = $this->service->find($id);
@@ -122,7 +116,7 @@ class UserServiceTest extends ServiceTestcase {
 
 			//vsimame si jen polozek, ktere jsme ted vlozili
 			if (isset($newData[$id])) {
-				$this->assertInstanceOf($this->userClass, $user2, "Item isn't object of proper class.");
+				$this->assertInstanceOf('Cvut\Fit\BiPwt\BlogBundle\Entity\User', $user2, "Item isn't object of proper class.");
 				$this->assertTrue($user2->getName() == $newData[$id], "User name for item #{$id} is improper.");
 				//odstranime polozku, pokud byla nalezena
 				unset($newData[$id]);
@@ -159,8 +153,8 @@ class UserServiceTest extends ServiceTestcase {
 		$this->assertInstanceOf($collectionClass, $users, "'findBy' method doesn't return object of proper class.");
 
 		foreach($users as $user2) {
-			$this->assertInstanceOf($this->userClass, $user2, "Item isn't object of proper class.");
-			$this->assertTrue($user2->getName() == $name, "User name for item #{$id} is improper.");
+			$this->assertInstanceOf('Cvut\Fit\BiPwt\BlogBundle\Entity\User', $user2, "Item isn't object of proper class.");
+			$this->assertTrue($user2->getName() == $name, "User name for item #{$user2->getId()} is improper.");
 		}
 
 		//test na operator 'contains'
@@ -173,8 +167,8 @@ class UserServiceTest extends ServiceTestcase {
 		$this->assertInstanceOf($collectionClass, $users, "'findBy' method doesn't return object of proper class.");
 
 		foreach($users as $user2) {
-			$this->assertInstanceOf($this->userClass, $user2, "Item isn't object of proper class.");
-			$this->assertTrue(strstr($user2->getName(), $str) !== FALSE, "Item #{$id} doesn't fit criterion.");
+			$this->assertInstanceOf('Cvut\Fit\BiPwt\BlogBundle\Entity\User', $user2, "Item isn't object of proper class.");
+			$this->assertTrue(strstr($user2->getName(), $str) !== FALSE, "Item #{$user2->getId()} doesn't fit criterion.");
 		}
 	}
 }
