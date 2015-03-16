@@ -2,7 +2,7 @@
 namespace Cvut\Fit\BiPwt\BlogBundle\Tests\Entity;
 
 use Doctrine\Common\Collections\Collection;
-use Symfony\Bundle\SecurityBundle\Tests\Functional\WebTestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 abstract class EntityTestcase extends WebTestCase {
 
