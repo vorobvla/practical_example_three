@@ -17,6 +17,21 @@ class BlogServiceTest extends ServiceTestcase {
 	/** @var UserInterface - implementace Service/UserInterface */
 	protected $userService;
 
+	/** @var int $postId - pocitadlo uzivatelu */
+	protected static $userId = 1;
+
+	/** @var int $postId - pocitadlo prispevku */
+	protected static $postId = 1;
+
+	/** @var int $postId - pocitadlo tagu */
+	protected static $tagId = 1;
+
+	/** @var int $postId - pocitadlo komentaru */
+	protected static $commentId = 1;
+
+	/** @var int $postId - pocitadlo souboru */
+	protected static $fileId = 1;
+
 	/**
 	 * setup - vytvoreni instance podle interfacu UserInterface
 	 */
@@ -31,12 +46,15 @@ class BlogServiceTest extends ServiceTestcase {
 
 	/**
 	 * pomocna metoda pro vytvoreni instance prispevku
+	 * @param $title
+	 * @param $text
+	 * @param $author
 	 * @return Post
 	 */
-	protected function _newPost($id, $title, $text, $author) {
+	protected function _newPost($title, $text, $author) {
 		$now = new \DateTime;
 		$post = new Post();
-		$post->setId($id);
+		$post->setId(self::$postId++);
 		$post->setTitle($title);
 		$post->setText($text);
 		$post->setAuthor($author);
@@ -50,12 +68,13 @@ class BlogServiceTest extends ServiceTestcase {
 
 	/**
 	 * pomocna metoda pro vytvoreni prispevku
-	 * @param $id
 	 * @param $title
+	 * @param $text
+	 * @param $author
 	 * @return Post
 	 */
-	protected function _createPost($id, $title, $text, $author) {
-		$post = $this->_newPost($id, $title, $text, $author);
+	protected function _createPost($title, $text, $author) {
+		$post = $this->_newPost($title, $text, $author);
 		$post2 = $this->service->createPost($post);
 		$this->assertTrue($post === $post2, "'createPost' method doesn't return proper object.");
 
@@ -64,11 +83,12 @@ class BlogServiceTest extends ServiceTestcase {
 
 	/**
 	 * pomocna metoda pro vytvoreni instance tag
+	 * @param $title
 	 * @return Tag
 	 */
-	protected function _newTag($id, $title) {
+	protected function _newTag($title) {
 		$tag = new Tag();
-		$tag->setId($id);
+		$tag->setId(self::$tagId++);
 		$tag->setTitle($title);
 
 		return $tag;
@@ -76,12 +96,11 @@ class BlogServiceTest extends ServiceTestcase {
 
 	/**
 	 * pomocna metoda pro vytvoreni tagu
-	 * @param $id
 	 * @param $title
 	 * @return Tag
 	 */
-	protected function _createTag($id, $title) {
-		$tag = $this->_newTag($id, $title);
+	protected function _createTag($title) {
+		$tag = $this->_newTag($title);
 		$tag2 = $this->service->createTag($tag);
 		$this->assertTrue($tag === $tag2, "'createTag' method doesn't return proper object.");
 
@@ -90,12 +109,14 @@ class BlogServiceTest extends ServiceTestcase {
 
 	/**
 	 * pomocna metoda pro vytvoreni instance comment
+	 * @param $text
+	 * @param $author
 	 * @return mixed
 	 */
-	protected function _newComment($id, $text, $author) {
+	protected function _newComment($text, $author) {
 		$now = new \DateTime;
 		$comment = new Comment();
-		$comment->setId($id);
+		$comment->setId(self::$commentId++);
 		$comment->setText($text);
 		$comment->setAuthor($author);
 		$comment->setCreated($now);
@@ -107,12 +128,13 @@ class BlogServiceTest extends ServiceTestcase {
 
 	/**
 	 * pomocna metoda pro vytvoreni instance file
+	 * @param $name
 	 * @return mixed
 	 */
-	protected function _newFile($id, $name) {
+	protected function _newFile($name) {
 		$now = new \DateTime;
 		$file = new File();
-		$file->setId($id);
+		$file->setId(self::$fileId++);
 		$file->setName($name);
 		$file->setData('dummy data');
 		$file->setCreated($now);
@@ -122,10 +144,19 @@ class BlogServiceTest extends ServiceTestcase {
 	}
 
 	/**
+	 * pomocna metoda pro vytvoreni uzivatele
+	 * @param $name
+	 * @return \Cvut\Fit\BiPwt\BlogBundle\Entity\UserInterface
+	 */
+	protected function _createUser($name) {
+		return $this->userService->create(self::$userId++, $name);
+	}
+
+	/**
 	 * test metody pro vytvoreni tagu
 	 */
 	public function testCreateTag() {
-		$tag = $this->_createTag(1, 'diary');
+		$tag = $this->_createTag('diary');
 		$tag2 = $this->service->findTag($tag->getId());
 		$this->assertNotNull($tag2, "Created tag cannot be found.");
 	}
@@ -135,7 +166,7 @@ class BlogServiceTest extends ServiceTestcase {
 	 */
 	public function testUpdateTag() {
 		$newVal = 'great ideas';
-		$tag = $this->_createTag(2, 'ideas');
+		$tag = $this->_createTag('ideas');
 		$tag->setTitle($newVal);
 		$tag2 = $this->service->updateTag($tag);
 		$tag3 = $this->service->findTag($tag->getId());
@@ -148,7 +179,7 @@ class BlogServiceTest extends ServiceTestcase {
 	 * test metody pro smazani tagu
 	 */
 	public function testDeleteTag() {
-		$tag = $this->_createTag(3, 'work');
+		$tag = $this->_createTag('work');
 		$id = $tag->getId();
 		$tag2 = $this->service->deleteTag($tag);
 
@@ -165,7 +196,7 @@ class BlogServiceTest extends ServiceTestcase {
 	 * test metody pro nalezeni tagu podle id
 	 */
 	public function testFindTag() {
-		$tag = $this->_createTag(4, 'music');
+		$tag = $this->_createTag('music');
 		$id = $tag->getId();
 
 		$tag2 = $this->service->findTag($id);
@@ -182,15 +213,15 @@ class BlogServiceTest extends ServiceTestcase {
 	 */
 	public function testFindTagBy() {
 		$data = [
-			5 => 'movie',
-			6 => 'demos',
-			7 => 'art',
+			'movie',
+			'demos',
+			'art',
 		];
 		$collectionClass = 'Doctrine\Common\Collections\Collection';
 
 		$newData = [];
-		foreach($data as $id => $title) {
-			$tag = $this->_createTag($id, $title);
+		foreach($data as $title) {
+			$tag = $this->_createTag($title);
 			//vytvorime si zaznamy s novym id
 			$newData[$tag->getId()] = $title;
 		}
@@ -228,15 +259,15 @@ class BlogServiceTest extends ServiceTestcase {
 	 */
 	public function testFindAllTags() {
 		$data = [
-			5 => 'movie',
-			6 => 'demos',
-			7 => 'art',
+			'movie',
+			'demos',
+			'art',
 		];
 		$collectionClass = 'Doctrine\Common\Collections\Collection';
 
 		$newData = [];
-		foreach($data as $id => $title) {
-			$tag = $this->_createTag($id, $title);
+		foreach($data as $title) {
+			$tag = $this->_createTag($title);
 			//vytvorime si zaznamy s novym id
 			$newData[$tag->getId()] = $title;
 		}
@@ -244,7 +275,7 @@ class BlogServiceTest extends ServiceTestcase {
 		//test
 		$tags = $this->service->findAllTags();
 		$this->assertInstanceOf($collectionClass, $tags, "'findAllTags' method doesn't return object of proper class.");
-		$this->assertCount(count($newData), $tags,"'findAllTags' method doesn't return proper number of items.");
+		$this->assertTrue(count($tags) >= count($newData),"'findAllTags' method doesn't return enough items.");
 
 		foreach($tags as $tag2) {
 			$this->assertInstanceOf('Cvut\Fit\BiPwt\BlogBundle\Entity\Tag', $tag2, "Item isn't object of proper class.");
@@ -255,8 +286,8 @@ class BlogServiceTest extends ServiceTestcase {
 	 * test metody pro vytvoreni prispevku
 	 */
 	public function testCreatePost() {
-		$author = $this->userService->create(1,'Autor 1');
-		$post = $this->_createPost(1, 'initial diary post', 'my dear diary...', $author);
+		$author = $this->_createUser('Autor 1');
+		$post = $this->_createPost('initial diary post', 'my dear diary...', $author);
 		$post2 = $this->service->findPost($post->getId());
 		$this->assertNotNull($post2, "Created post cannot be found.");
 	}
@@ -265,26 +296,30 @@ class BlogServiceTest extends ServiceTestcase {
 	 * test metody pro aktualizaci prispevku
 	 */
 	public function testUpdatePost() {
-		$author = $this->userService->create(2,'Autor II');
+		$author = $this->_createUser('Autor II');
 		$newTitle = 'diary post #2';
-		$newAuthor = $this->userService->create(3,'Autor 3');
-		$post = $this->_createPost(2, 'second diary post', 'once upon a time...', $author);
+		$newAuthor = $this->_createUser('Autor 3');
+		$tag = $this->_createTag('used tag');
+
+		$post = $this->_createPost('second diary post', 'once upon a time...', $author);
 		$post->setTitle($newTitle);
 		$post->setAuthor($newAuthor);
+		$post->addTag($tag);
 		$post2 = $this->service->updatePost($post);
 		$post3 = $this->service->findPost($post->getId());
 
 		$this->assertTrue($post == $post2, "'updatePost' method doesn't return proper object.");
 		$this->assertTrue($post3->getTitle() == $newTitle, "Post title didn't change properly.");
 		$this->assertTrue($post3->getAuthor() == $newAuthor, "Post author didn't change properly.");
+		$this->assertTrue($post3->getTags()->contains($tag), "Post isn't tagged properly.");
 	}
 
 	/**
 	 * test metody pro smazani prispevku
 	 */
 	public function testDeletePost() {
-		$author = $this->userService->create(4,'Autor 4');
-		$post = $this->_createPost(3, 'my favourite band', 'my favourite music band is...', $author);
+		$author = $this->_createUser('Autor 4');
+		$post = $this->_createPost('my favourite band', 'my favourite music band is...', $author);
 		$id = $post->getId();
 		$post2 = $this->service->deletePost($post);
 
@@ -301,8 +336,8 @@ class BlogServiceTest extends ServiceTestcase {
 	 * test metody pro nalezeni prispevku podle id
 	 */
 	public function testFindPost() {
-		$author = $this->userService->create(5,'Mr. Five');
-		$post = $this->_createPost(4, 'my favourite artist', 'my favourite artist is...', $author);
+		$author = $this->_createUser('Mr. Five');
+		$post = $this->_createPost('my favourite artist', 'my favourite artist is...', $author);
 		$id = $post->getId();
 
 		$post2 = $this->service->findPost($id);
@@ -318,19 +353,19 @@ class BlogServiceTest extends ServiceTestcase {
 	 * test metody pro nalezeni vsech prispevku
 	 */
 	public function testFindAllPosts() {
-		$author1 = $this->userService->create(6,'Blogger 6');
-		$author2 = $this->userService->create(7,'Se7en');
+		$author1 = $this->_createUser('Blogger 6');
+		$author2 = $this->_createUser('Se7en');
 		$data = [
-			5 => ['sample post title 5', 'sample post content text...', $author1],
-			6 => ['another post title', 'text text text', $author2],
-			7 => ['dummy post title', 'this is dummy post', $author1]
+			['sample post title 5', 'sample post content text...', $author1],
+			['another post title', 'text text text', $author2],
+			['dummy post title', 'this is dummy post', $author1]
 		];
 		$collectionClass = 'Doctrine\Common\Collections\Collection';
 
 		$newData = [];
-		foreach($data as $id => $item) {
+		foreach($data as $item) {
 			list($title, $text, $author) = $item;
-			$post = $this->_createPost($id, $title, $text, $author);
+			$post = $this->_createPost($title, $text, $author);
 			//vytvorime si zaznamy s novym id
 			$newData[$post->getId()] = $item;
 		}
@@ -338,7 +373,7 @@ class BlogServiceTest extends ServiceTestcase {
 		//test
 		$posts = $this->service->findAllPosts();
 		$this->assertInstanceOf($collectionClass, $posts, "'findAllPosts' method doesn't return object of proper class.");
-		$this->assertCount(count($newData), $posts, "'findAllPosts' method doesn't return proper number of items.");
+		$this->assertTrue(count($posts) >= count($newData), "'findAllPosts' method doesn't return enough items.");
 
 		foreach($posts as $post2) {
 			$this->assertInstanceOf('Cvut\Fit\BiPwt\BlogBundle\Entity\Post', $post2, "Item isn't object of proper class.");
@@ -349,19 +384,19 @@ class BlogServiceTest extends ServiceTestcase {
 	 * test metody pro nalezeni prispevku podle kriterii
 	 */
 	public function testFindPostBy() {
-		$author1 = $this->userService->create(6,'Blogger 6');
-		$author2 = $this->userService->create(7,'Se7en');
+		$author1 = $this->_createUser('Blogger 6');
+		$author2 = $this->_createUser('Se7en');
 		$data = [
-			5 => ['sample post title 5', 'sample post content text...', $author1],
-			6 => ['another post title', 'text text text', $author2],
-			7 => ['dummy post title', 'this is dummy post', $author1]
+			['sample post title 5', 'sample post content text...', $author1],
+			['another post title', 'text text text', $author2],
+			['dummy post title', 'this is dummy post', $author1]
 		];
 		$collectionClass = 'Doctrine\Common\Collections\Collection';
 
 		$newData = [];
-		foreach($data as $id => $item) {
+		foreach($data as $item) {
 			list($title, $text, $author) = $item;
-			$post = $this->_createPost($id, $title, $text, $author);
+			$post = $this->_createPost($title, $text, $author);
 			//vytvorime si zaznamy s novym id
 			$newData[$post->getId()] = $item;
 		}
@@ -398,11 +433,11 @@ class BlogServiceTest extends ServiceTestcase {
 	 * test metody pro pridani komentare
 	 */
 	public function testAddComment() {
-		$author = $this->userService->create(8,'Author 8');
-		$guest = $this->userService->create(9,'Guest');
+		$author = $this->_createUser('Author 8');
+		$guest = $this->_createUser('Guest');
 
-		$post = $this->_createPost(8, 'post number eight', 'this day was...', $author);
-		$comment = $this->_newComment(1, 'like +8', $guest);
+		$post = $this->_createPost('post number eight', 'this day was...', $author);
+		$comment = $this->_newComment('like +8', $guest);
 
 		$post2 = $this->service->addComment($post, $comment);
 		$this->assertTrue($post == $post2, "'addComment' method returns different post.");
@@ -424,11 +459,11 @@ class BlogServiceTest extends ServiceTestcase {
 	 * test metody pro smazani komentare
 	 */
     public function testDeleteComment() {
-	    $author = $this->userService->create(10,'Author 10');
-	    $guest = $this->userService->create(11,'AdBot');
+	    $author = $this->_createUser('Author 10');
+	    $guest = $this->_createUser('AdBot');
 
-	    $post = $this->_createPost(9, 'post number nine', "thanks god it's friday...", $author);
-	    $comment = $this->_newComment(2, 'buy new pills!', $guest);
+	    $post = $this->_createPost('post number nine', "thanks god it's friday...", $author);
+	    $comment = $this->_newComment('buy new pills!', $guest);
 
 	    $this->service->addComment($post, $comment);
 
@@ -444,10 +479,10 @@ class BlogServiceTest extends ServiceTestcase {
 	 * test metody pro pridani souboru
 	 */
     public function testAddPostFile() {
-	    $author = $this->userService->create(10,'Author 10');
+	    $author = $this->_createUser('Author 10');
 
-	    $post = $this->_createPost(10, 'post number ten', 'we wish you merry christmas...', $author);
-	    $file = $this->_newFile(1, 'pills.xls');
+	    $post = $this->_createPost('post number ten', 'we wish you merry christmas...', $author);
+	    $file = $this->_newFile('pills.xls');
 
 	    $post2 = $this->service->addPostFile($file, $post);
 	    $this->assertTrue($post == $post2, "'addFile' method returns different post.");
@@ -469,17 +504,17 @@ class BlogServiceTest extends ServiceTestcase {
 	 * test metody pro smazani souboru
 	 */
     public function testDeleteFile() {
-	    $author = $this->userService->create(11,'Author XI');
+	    $author = $this->_createUser('Author XI');
 
-	    $post = $this->_createPost(11, 'post number XI', "thanks got it's not monday...", $author);
-	    $file = $this->_newFile(2, 'new_pills.pdf.exe');
+	    $post = $this->_createPost('post number XI', "thanks got it's not monday...", $author);
+	    $file = $this->_newFile('new_pills.pdf.exe');
 
 	    $this->service->addPostFile($file, $post);
 
 	    $post2 = $this->service->deleteFile($file);
 	    $this->assertTrue($post == $post2, "'deleteFile' method returns different post.");
 
-	    foreach($post->getfiles() as $file2) {
+	    foreach($post->getFiles() as $file2) {
 		    $this->assertFalse($file2->getId() == $file->getId(), "Deleted file still can be found.");
 	    }
     }
