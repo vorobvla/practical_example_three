@@ -114,7 +114,7 @@ interface PostInterface
      * @param \DateTime $publishFrom
      * @return PostInterface $this
      */
-    public function setPublishFrom(\DateTime $publishFrom);
+    public function setPublishFrom(\DateTime $publishFrom = NULL);
 
     /**
      * Vrati datum, do kdy ma byt prispevek publikovan
@@ -129,7 +129,7 @@ interface PostInterface
      * @param \DateTime $publishTo
      * @return PostInterface $this
      */
-    public function setPublishTo(\DateTime $publishTo);
+    public function setPublishTo(\DateTime $publishTo = NULL);
 
     /**
      * Vrati priznak, zda je prispevek verejny ci nikoliv
