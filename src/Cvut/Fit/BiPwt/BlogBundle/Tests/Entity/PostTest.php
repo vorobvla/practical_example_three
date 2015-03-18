@@ -86,7 +86,7 @@ class PostTest extends EntityTestcase {
 	public function testFile() {
 		$file = new File();
 
-		$this->_testAddRemove('addFile', 'removeFile', 'getFiles', $file);
+		$this->_testAddRemove('addFile', 'removeFile', 'getFiles', 'getPost', $file);
 	}
 
 	/**
@@ -95,7 +95,7 @@ class PostTest extends EntityTestcase {
 	public function testTag() {
 		$tag = new Tag();
 
-		$this->_testAddRemove('addTag', 'removeTag', 'getTags', $tag);
+		$this->_testAddRemove('addTag', 'removeTag', 'getTags', 'getPosts', $tag);
 	}
 
 	/**
@@ -104,6 +104,6 @@ class PostTest extends EntityTestcase {
 	public function testComment() {
 		$comment = new Comment();
 
-		$this->_testAddRemove('addComment', 'removeComment', 'getComments', $comment);
+		$this->_testAddRemove('addComment', 'removeComment', 'getComments', 'getPost', $comment);
 	}
 }

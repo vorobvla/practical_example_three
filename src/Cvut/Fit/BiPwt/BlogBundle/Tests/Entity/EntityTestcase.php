@@ -33,9 +33,10 @@ abstract class EntityTestcase extends WebTestCase {
 	 * @param $add - nazev metody pro pridani do kolekce (add)
 	 * @param $remove - nazev metody pro odebrani do kolekci (remove)
 	 * @param $get - nazev metody pro get cele kolekce
+	 * @param $inverseGet - nazev metody pro get entity vlastnici kolekci
 	 * @param null $a - dosazovana hodnota (pokud je potreba konkretni typ)
 	 */
-	protected function _testAddRemove($add, $remove, $get, $a = NULL) {
+	protected function _testAddRemove($add, $remove, $get, $inverseGet, $a = NULL) {
 		$this->assertNotNull($this->object, "Object is NULL.");
 		$this->assertTrue(method_exists($this->object, $add), "Setter method {$add} doesn't exist.");
 		$this->assertTrue(method_exists($this->object, $remove), "Getter method {$remove} doesn't exist.");
@@ -49,10 +50,20 @@ abstract class EntityTestcase extends WebTestCase {
 		$collection = $this->object->$get();
 		$this->assertTrue($collection->contains($a), "Collection doesn't contain item after {$add}");
 
+		$inverse = $a->$inverseGet();
+		if($inverse instanceof Collection) {
+			$this->assertTrue($a->$inverseGet()->contains($this->object), "Collection item isn't contained ({$inverseGet}) in inverse collection after {$add}");
+		} else {
+			$this->assertTrue($a->$inverseGet() == $this->object, "Collection item doesn't refer ({$inverseGet}) to inverse object after {$add}");
+		}
+
+
+
 		$object = $this->object->$remove($a);
 		//$this->assertEquals($this->object, $object, "{$remove} is not fluent.");
 		$collection = $this->object->$get();
 		$this->assertFalse($collection->contains($a), "Collection contains item after {$remove}");
+		//$this->assertTrue($a->$inverseGet() == $this->object, "Collection item still refer ({$inverseGet}) to owning object after {$remove}");
 	}
 
 

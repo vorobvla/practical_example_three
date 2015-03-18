@@ -34,6 +34,6 @@ class TagTest extends EntityTestcase {
 	public function testPost() {
 		$post = new Post();
 
-		$this->_testAddRemove('addPost', 'removePost', 'getPosts', $post);
+		$this->_testAddRemove('addPost', 'removePost', 'getPosts', 'getTags', $post);
 	}
 }

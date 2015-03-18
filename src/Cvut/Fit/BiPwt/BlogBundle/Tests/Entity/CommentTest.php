@@ -52,10 +52,10 @@ class CommentTest extends EntityTestcase {
 	/**
 	 * test add/remove a gettru pro kolekci children
 	 */
-	public function testTag() {
+	public function testChildren() {
 		$comment = new Comment();
 
-		$this->_testAddRemove('addChild', 'removeChild', 'getChildren', $comment);
+		$this->_testAddRemove('addChild', 'removeChild', 'getChildren', 'getParent', $comment);
 	}
 
 	/**
@@ -85,7 +85,7 @@ class CommentTest extends EntityTestcase {
 	public function testFile() {
 		$file = new File();
 
-		$this->_testAddRemove('addFile', 'removeFile', 'getFiles', $file);
+		$this->_testAddRemove('addFile', 'removeFile', 'getFiles', 'getComment', $file);
 	}
 
 	/**
