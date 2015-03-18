@@ -1,0 +1,71 @@
+@startuml
+
+object User {
+  Number id
+  String name
+  Collection<Post> posts
+}
+
+object Post {
+    Number id
+    String title
+    Text text
+    User author
+    Boolean private
+    DateTime created
+    DateTime modified
+    DateTime publishFrom = NULL
+    DateTime publishTo = NULL
+    Collection<Comment> comments
+    Collection<File> files
+    Collection<Tag> tags
+}
+
+object Comment {
+    Number id
+    User author
+    Post post
+    Comment parent = NULL
+    Collection<Comment> children
+    Text text
+    DateTime created
+    DateTime modified
+    Collection<File> files
+    Boolean spam
+}
+
+object File {
+    Number id
+    String name
+    Post post
+    Comment comment = NULL
+    DateTime created
+    String internetMediaType
+    Blob data
+}
+
+object Image {
+    Integer dimensionX
+    Integer dimensionY
+    Blob preview
+}
+
+object Tag {
+    Number id
+    String title
+    Collection<Post> posts
+}
+
+
+Post "0..N" --* "1" User
+Post "1" --* "0..N" Comment
+Post "1" --* "0..N" File
+Post "0..N" --* "0..N" Tag
+
+Comment "0..N" --* "1" User
+Comment "0" --* "0..N" Comment
+Comment "1" --* "0..N" File
+
+File <|-- Image
+
+@enduml
