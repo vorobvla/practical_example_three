@@ -38,8 +38,9 @@ abstract class EntityTestcase extends WebTestCase {
 	 */
 	protected function _testAddRemove($add, $remove, $get, $inverseGet, $a = NULL) {
 		$this->assertNotNull($this->object, "Object is NULL.");
-		$this->assertTrue(method_exists($this->object, $add), "Setter method {$add} doesn't exist.");
-		$this->assertTrue(method_exists($this->object, $remove), "Getter method {$remove} doesn't exist.");
+		$this->assertTrue(method_exists($this->object, $add), "Add method {$add} doesn't exist.");
+		$this->assertTrue(method_exists($this->object, $remove), "Remove method {$remove} doesn't exist.");
+		$this->assertTrue(method_exists($a, $inverseGet), "Inverse getter method {$inverseGet} doesn't exist.");
 
 		if(is_null($a))
 			$a = uniqid();
