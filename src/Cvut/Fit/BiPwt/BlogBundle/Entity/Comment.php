@@ -165,29 +165,6 @@ class Comment implements CommentInterface
     }
 
     /**
-     * Set children
-     *
-     * @param array $children
-     * @return Comment
-     */
-    public function setChildren($children)
-    {
-        $this->children = $children;
-
-        return $this;
-    }
-
-    /**
-     * Get children
-     *
-     * @return array 
-     */
-    public function getChildren()
-    {
-        return $this->children;
-    }
-
-    /**
      * Set text
      *
      * @param string $text
@@ -256,28 +233,6 @@ class Comment implements CommentInterface
         return $this->modified;
     }
 
-    /**
-     * Set files
-     *
-     * @param array $files
-     * @return Comment
-     */
-    public function setFiles($files)
-    {
-        $this->files = $files;
-
-        return $this;
-    }
-
-    /**
-     * Get files
-     *
-     * @return array 
-     */
-    public function getFiles()
-    {
-        return $this->files;
-    }
 
     /**
      * Set spam
@@ -300,60 +255,5 @@ class Comment implements CommentInterface
     public function getSpam()
     {
         return $this->spam;
-    }
-
-    /**
-     * Nastavi ID komentare
-     *
-     * @param mixed $id
-     * @return CommentInterface $this
-     */
-    public function setId($id)
-    {
-        // TODO: Implement setId() method.
-    }
-
-    /**
-     * Prida potomka tohoto komentare
-     *
-     * @param CommentInterface $comment
-     * @return CommentInterface $this
-     */
-    public function addChild(CommentInterface $comment)
-    {
-        // TODO: Implement addChild() method.
-    }
-
-    /**
-     * Odebere potomka tohoto komentare
-     *
-     * @param CommentInterface $comment
-     * @return CommentInterface $this
-     */
-    public function removeChild(CommentInterface $comment)
-    {
-        // TODO: Implement removeChild() method.
-    }
-
-    /**
-     * Prida soubor k tomuto komentari
-     *
-     * @param FileInterface $file
-     * @return CommentInterface $this
-     */
-    public function addFile(FileInterface $file)
-    {
-        // TODO: Implement addFile() method.
-    }
-
-    /**
-     * Odebere soubor od tohoto komentare
-     *
-     * @param FileInterface $file
-     * @return CommentInterface $this
-     */
-    public function removeFile(FileInterface $file)
-    {
-        // TODO: Implement removeFile() method.
     }
 }

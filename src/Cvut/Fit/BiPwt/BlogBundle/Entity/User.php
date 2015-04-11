@@ -69,26 +69,4 @@ class User implements UserInterface
         return $this->name;
     }
 
-    /**
-     * Set posts
-     *
-     * @param array $posts
-     * @return User
-     */
-    public function setPosts($posts)
-    {
-        $this->posts = $posts;
-
-        return $this;
-    }
-
-    /**
-     * Get posts
-     *
-     * @return array 
-     */
-    public function getPosts()
-    {
-        return $this->posts;
-    }
 }

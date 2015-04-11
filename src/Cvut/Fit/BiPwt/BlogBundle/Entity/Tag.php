@@ -69,26 +69,4 @@ class Tag implements TagInterface
         return $this->title;
     }
 
-    /**
-     * Set posts
-     *
-     * @param \stdClass $posts
-     * @return Tag
-     */
-    public function setPosts($posts)
-    {
-        $this->posts = $posts;
-
-        return $this;
-    }
-
-    /**
-     * Get posts
-     *
-     * @return \stdClass 
-     */
-    public function getPosts()
-    {
-        return $this->posts;
-    }
 }
