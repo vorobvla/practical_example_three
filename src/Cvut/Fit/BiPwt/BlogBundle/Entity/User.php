@@ -1,6 +1,94 @@
 <?php
+
 namespace Cvut\Fit\BiPwt\BlogBundle\Entity;
 
-class User implements UserInterface {
+use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * User
+ *
+ * @ORM\Table()
+ * @ORM\Entity
+ */
+class User implements UserInterface
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="name", type="string", length=255)
+     */
+    private $name;
+
+    /**
+     * @var array
+     *
+     * @ORM\Column(name="posts", type="array")
+     */
+    private $posts;
+
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set name
+     *
+     * @param string $name
+     * @return User
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string 
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Set posts
+     *
+     * @param array $posts
+     * @return User
+     */
+    public function setPosts($posts)
+    {
+        $this->posts = $posts;
+
+        return $this;
+    }
+
+    /**
+     * Get posts
+     *
+     * @return array 
+     */
+    public function getPosts()
+    {
+        return $this->posts;
+    }
 }
