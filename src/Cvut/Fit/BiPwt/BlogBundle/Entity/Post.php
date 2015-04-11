@@ -8,7 +8,7 @@ use Symfony\Component\Validator\Constraints\Null;
 /**
  * Post
  *
- * @ORM\Table(name="post")
+ * @ORM\Table(name="blog_post")
  * @ORM\Entity
  */
 class Post implements PostInterface

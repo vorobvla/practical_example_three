@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Tag
  *
- * @ORM\Table()
+ * @ORM\Table(name="blog_tag")
  * @ORM\Entity
  */
 class Tag implements TagInterface

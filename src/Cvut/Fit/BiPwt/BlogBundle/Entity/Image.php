@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Image
  *
- * @ORM\Table()
+ * @ORM\Table(name="blog_tag")
  * @ORM\Entity
  */
 class Image extends File implements ImageInterface

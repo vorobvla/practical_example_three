@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * File
  *
- * @ORM\Table()
+ * @ORM\Table(name="blog_file")
  * @ORM\Entity
  */
 class File implements FileInterface
