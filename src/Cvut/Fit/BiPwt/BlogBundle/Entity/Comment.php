@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Comment
  *
- * @ORM\Table()
+ * @ORM\Table(name="comment")
  * @ORM\Entity
  */
 class Comment implements CommentInterface
@@ -24,7 +24,7 @@ class Comment implements CommentInterface
     /**
      * @var \stdClass
      *
-     * @ORM\Column(name="author", type="object")
+     * @ORM\Column(name="author", type="User")
      */
     private $author;
 
@@ -101,7 +101,7 @@ class Comment implements CommentInterface
      * @param \stdClass $author
      * @return Comment
      */
-    public function setAuthor($author)
+    public function setAuthor(UserInterface $author)
     {
         $this->author = $author;
 
@@ -124,7 +124,7 @@ class Comment implements CommentInterface
      * @param \stdClass $post
      * @return Comment
      */
-    public function setPost($post)
+    public function setPost(PostInterface $post)
     {
         $this->post = $post;
 
@@ -147,7 +147,7 @@ class Comment implements CommentInterface
      * @param \stdClass $parent
      * @return Comment
      */
-    public function setParent($parent)
+    public function setParent(CommentInterface $parent)
     {
         $this->parent = $parent;
 
@@ -216,7 +216,7 @@ class Comment implements CommentInterface
      * @param \DateTime $created
      * @return Comment
      */
-    public function setCreated($created)
+    public function setCreated(\DateTime $created)
     {
         $this->created = $created;
 
@@ -239,7 +239,7 @@ class Comment implements CommentInterface
      * @param \DateTime $modified
      * @return Comment
      */
-    public function setModified($modified)
+    public function setModified(\DateTime $modified)
     {
         $this->modified = $modified;
 
@@ -300,5 +300,60 @@ class Comment implements CommentInterface
     public function getSpam()
     {
         return $this->spam;
+    }
+
+    /**
+     * Nastavi ID komentare
+     *
+     * @param mixed $id
+     * @return CommentInterface $this
+     */
+    public function setId($id)
+    {
+        // TODO: Implement setId() method.
+    }
+
+    /**
+     * Prida potomka tohoto komentare
+     *
+     * @param CommentInterface $comment
+     * @return CommentInterface $this
+     */
+    public function addChild(CommentInterface $comment)
+    {
+        // TODO: Implement addChild() method.
+    }
+
+    /**
+     * Odebere potomka tohoto komentare
+     *
+     * @param CommentInterface $comment
+     * @return CommentInterface $this
+     */
+    public function removeChild(CommentInterface $comment)
+    {
+        // TODO: Implement removeChild() method.
+    }
+
+    /**
+     * Prida soubor k tomuto komentari
+     *
+     * @param FileInterface $file
+     * @return CommentInterface $this
+     */
+    public function addFile(FileInterface $file)
+    {
+        // TODO: Implement addFile() method.
+    }
+
+    /**
+     * Odebere soubor od tohoto komentare
+     *
+     * @param FileInterface $file
+     * @return CommentInterface $this
+     */
+    public function removeFile(FileInterface $file)
+    {
+        // TODO: Implement removeFile() method.
     }
 }

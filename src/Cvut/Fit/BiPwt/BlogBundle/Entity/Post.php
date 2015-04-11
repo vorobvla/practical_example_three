@@ -3,6 +3,7 @@
 namespace Cvut\Fit\BiPwt\BlogBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints\Null;
 
 /**
  * Post
@@ -161,7 +162,7 @@ class Post implements PostInterface
      * @param \stdClass $author
      * @return Post
      */
-    public function setAuthor($author)
+    public function setAuthor(UserInterface $author)
     {
         $this->author = $author;
 
@@ -207,7 +208,7 @@ class Post implements PostInterface
      * @param \DateTime $created
      * @return Post
      */
-    public function setCreated($created)
+    public function setCreated(\DateTime $created = NULL)
     {
         $this->created = $created;
 
@@ -230,7 +231,7 @@ class Post implements PostInterface
      * @param \DateTime $modified
      * @return Post
      */
-    public function setModified($modified)
+    public function setModified(\DateTime $modified = NULL)
     {
         $this->modified = $modified;
 
@@ -253,7 +254,7 @@ class Post implements PostInterface
      * @param \DateTime $publishFrom
      * @return Post
      */
-    public function setPublishFrom($publishFrom)
+    public function setPublishFrom(\DateTime $publishFrom = NULL)
     {
         $this->publishFrom = $publishFrom;
 
@@ -276,7 +277,7 @@ class Post implements PostInterface
      * @param \DateTime $publishTo
      * @return Post
      */
-    public function setPublishTo($publishTo)
+    public function setPublishTo(\DateTime $publishTo = NULL)
     {
         $this->publishTo = $publishTo;
 

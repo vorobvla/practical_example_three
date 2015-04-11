@@ -103,7 +103,7 @@ class File implements FileInterface
      * @param \stdClass $post
      * @return File
      */
-    public function setPost($post)
+    public function setPost(PostInterface $post)
     {
         $this->post = $post;
 
@@ -126,7 +126,7 @@ class File implements FileInterface
      * @param \stdClass $comment
      * @return File
      */
-    public function setComment($comment)
+    public function setComment(CommentInterface $comment)
     {
         $this->comment = $comment;
 
@@ -149,7 +149,7 @@ class File implements FileInterface
      * @param \DateTime $created
      * @return File
      */
-    public function setCreated($created)
+    public function setCreated(\DateTime $created)
     {
         $this->created = $created;
 
@@ -211,4 +211,17 @@ class File implements FileInterface
     {
         return $this->data;
     }
+
+    /**
+     * Nastavi unikatni identifikator souboru
+     *
+     * @param number $id
+     * @return FileInterface $this
+     */
+    public function setId($id)
+    {
+        // TODO: Implement setId() method.
+    }
+
+
 }
