@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table()
  * @ORM\Entity
  */
-class Image implements ImageInterface
+class Image extends File implements ImageInterface
 {
     /**
      * @var integer
