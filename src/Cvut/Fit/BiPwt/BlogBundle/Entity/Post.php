@@ -2,6 +2,7 @@
 
 namespace Cvut\Fit\BiPwt\BlogBundle\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints\Null;
 
@@ -12,7 +13,115 @@ use Symfony\Component\Validator\Constraints\Null;
  * @ORM\Entity
  */
 class Post implements PostInterface
+
 {
+    /**
+     * Nastavi unikatni ID
+     *
+     * @param number $id
+     * @return PostInterface $this
+     */
+    public function setId($id)
+    {
+        // TODO: Implement setId() method.
+    }
+
+    /**
+     * Prida soubor k prispevku
+     *
+     * @param FileInterface $file
+     * @return PostInterface $this
+     */
+    public function addFile(FileInterface $file)
+    {
+        // TODO: Implement addFile() method.
+    }
+
+    /**
+     * Vrati kolekci souboru prislusejicich k prispevku
+     *
+     * @return Collection<FileInterface>
+     */
+    public function getFiles()
+    {
+        // TODO: Implement getFiles() method.
+    }
+
+    /**
+     * Odebere soubor od prispevku
+     *
+     * @param FileInterface $file
+     * @return PostInterface $this
+     */
+    public function removeFile(FileInterface $file)
+    {
+        // TODO: Implement removeFile() method.
+    }
+
+    /**
+     * Prida komentar k prispevku
+     *
+     * @param CommentInterface $comment
+     * @return PostInterface
+     */
+    public function addComment(CommentInterface $comment)
+    {
+        // TODO: Implement addComment() method.
+    }
+
+    /**
+     * Vrati kolekci komentaru prislusejicich k prispevku
+     *
+     * @return Collection<CommentInterface>
+     */
+    public function getComments()
+    {
+        // TODO: Implement getComments() method.
+    }
+
+    /**
+     * Odebere komentar od prispevku
+     *
+     * @param CommentInterface $comment
+     * @return PostInterface
+     */
+    public function removeComment(CommentInterface $comment)
+    {
+        // TODO: Implement removeComment() method.
+    }
+
+    /**
+     * Prida znacku k prispevku
+     *
+     * @param TagInterface $tag
+     * @return PostInterface
+     */
+    public function addTag(TagInterface $tag)
+    {
+        // TODO: Implement addTag() method.
+    }
+
+    /**
+     * Vrati kolekci znacek prislusejicih k prispevku
+     *
+     * @return Collection<TagInterface>
+     */
+    public function getTags()
+    {
+        // TODO: Implement getTags() method.
+    }
+
+    /**
+     * Odebere znacku od prispevku
+     *
+     * @param TagInterface $tag
+     * @return PostInterface
+     */
+    public function removeTag(TagInterface $tag)
+    {
+        // TODO: Implement removeTag() method.
+    }
+
     /**
      * @var integer
      *

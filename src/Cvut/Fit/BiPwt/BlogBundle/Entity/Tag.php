@@ -2,6 +2,7 @@
 
 namespace Cvut\Fit\BiPwt\BlogBundle\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -12,6 +13,50 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Tag implements TagInterface
 {
+    /**
+     * Nastavi ID tagu
+     *
+     * @param number $id
+     * @return TagInterface $this
+     */
+    public function setId($id)
+    {
+        // TODO: Implement setId() method.
+    }
+
+    /**
+     * Prida prispevek ke znacce
+     *
+     * @param PostInterface $post
+     * @return TagInterface $this
+     */
+    public function addPost(PostInterface $post)
+    {
+        // TODO: Implement addPost() method.
+    }
+
+    /**
+     * Vrati prispevky prirazene ke znacce
+     *
+     * @return Collection<PostInterface>
+     */
+    public function getPosts()
+    {
+        // TODO: Implement getPosts() method.
+    }
+
+    /**
+     *
+     * Odstrani prispevek od znacky
+     *
+     * @param PostInterface $post
+     * @return TagInterface $this
+     */
+    public function removePost(PostInterface $post)
+    {
+        // TODO: Implement removePost() method.
+    }
+
     /**
      * @var integer
      *
@@ -47,7 +92,7 @@ class Tag implements TagInterface
     }
 
     /**
-     * Set title
+     * Set tithle
      *
      * @param string $title
      * @return Tag

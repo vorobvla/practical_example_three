@@ -2,6 +2,7 @@
 
 namespace Cvut\Fit\BiPwt\BlogBundle\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -12,6 +13,81 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Comment implements CommentInterface
 {
+    /**
+     * Nastavi ID komentare
+     *
+     * @param mixed $id
+     * @return CommentInterface $this
+     */
+    public function setId($id)
+    {
+        // TODO: Implement setId() method.
+    }
+
+    /**
+     * Prida potomka tohoto komentare
+     *
+     * @param CommentInterface $comment
+     * @return CommentInterface $this
+     */
+    public function addChild(CommentInterface $comment)
+    {
+        // TODO: Implement addChild() method.
+    }
+
+    /**
+     * Vrati potomky komentare (ktere na tento reaguji)
+     *
+     * @return Collection<CommentInterface>
+     */
+    public function getChildren()
+    {
+        // TODO: Implement getChildren() method.
+    }
+
+    /**
+     * Odebere potomka tohoto komentare
+     *
+     * @param CommentInterface $comment
+     * @return CommentInterface $this
+     */
+    public function removeChild(CommentInterface $comment)
+    {
+        // TODO: Implement removeChild() method.
+    }
+
+    /**
+     * Prida soubor k tomuto komentari
+     *
+     * @param FileInterface $file
+     * @return CommentInterface $this
+     */
+    public function addFile(FileInterface $file)
+    {
+        // TODO: Implement addFile() method.
+    }
+
+    /**
+     * Vrati kolekci souboru prislusejicich tomuto komentari
+     *
+     * @return Collection<FileInterface>
+     */
+    public function getFiles()
+    {
+        // TODO: Implement getFiles() method.
+    }
+
+    /**
+     * Odebere soubor od tohoto komentare
+     *
+     * @param FileInterface $file
+     * @return CommentInterface $this
+     */
+    public function removeFile(FileInterface $file)
+    {
+        // TODO: Implement removeFile() method.
+    }
+
     /**
      * @var integer
      *
@@ -24,7 +100,7 @@ class Comment implements CommentInterface
     /**
      * @var \stdClass
      *
-     * @ORM\Column(name="author", type="User")
+     * @ORM\Column(name="author", type="object")
      */
     private $author;
 

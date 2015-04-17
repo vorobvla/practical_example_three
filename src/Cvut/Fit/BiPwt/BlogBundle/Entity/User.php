@@ -13,6 +13,47 @@ use Doctrine\ORM\Mapping as ORM;
 class User implements UserInterface
 {
     /**
+     * Nastavi unikatni ID uzivatele
+     * @param number $id
+     * @return UserInterface $this
+     */
+    public function setId($id)
+    {
+        // TODO: Implement setId() method.
+    }
+
+    /**
+     * Prida prispevek uzivatele
+     *
+     * @param PostInterface $post
+     * @return UserInterface $this
+     */
+    public function addPost(PostInterface $post)
+    {
+        // TODO: Implement addPost() method.
+    }
+
+    /**
+     * Vrati prispevky uzivatele
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPosts()
+    {
+        // TODO: Implement getPosts() method.
+    }
+
+    /**
+     * Odstrani prispevek uzivatele
+     *
+     * @param PostInterface $post
+     * @return UserInterface $this
+     */
+    public function removePost(PostInterface $post)
+    {
+        // TODO: Implement removePost() method.
+    }
+
+    /**
      * @var integer
      *
      * @ORM\Column(name="id", type="integer")
