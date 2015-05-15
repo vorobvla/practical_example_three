@@ -1,0 +1,9 @@
+{% extends "::base.html.twig" %}
+
+{% block body %}
+<ul>
+{%  for  f in fields  %}
+    <li>{{ f }}</li>
+{%  endfor %}
+</ul>
+{% endblock %}
