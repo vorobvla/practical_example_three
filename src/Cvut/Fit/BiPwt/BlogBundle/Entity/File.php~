@@ -9,6 +9,9 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="blog_file")
  * @ORM\Entity
+ * @ORM\InheritanceType("SINGLE_TABLE")
+ * @ORM\DiscriminatorColumn(name="discriminator", type="string")
+ * @ORM\DiscriminatorMap({"file" = "File", "img" = "Image"})
  */
 class File implements FileInterface
 {
@@ -38,7 +41,8 @@ class File implements FileInterface
     /**
      * @var \stdClass
      *
-     * @ORM\Column(name="comment", type="object")
+     * @ORM\ManyToOne(targetEntity="Cvut\Fit\BiPwt\BlogBundle\Entity\Comment",
+     * inversedBy="files")
      */
     private $comment;
 
@@ -97,51 +101,6 @@ class File implements FileInterface
         return $this->name;
     }
 
-    /**
-     * Set post
-     *
-     * @param \stdClass $post
-     * @return File
-     */
-    public function setPost(PostInterface $post)
-    {
-        $this->post = $post;
-
-        return $this;
-    }
-
-    /**
-     * Get post
-     *
-     * @return \stdClass 
-     */
-    public function getPost()
-    {
-        return $this->post;
-    }
-
-    /**
-     * Set comment
-     *
-     * @param \stdClass $comment
-     * @return File
-     */
-    public function setComment(CommentInterface $comment)
-    {
-        $this->comment = $comment;
-
-        return $this;
-    }
-
-    /**
-     * Get comment
-     *
-     * @return \stdClass 
-     */
-    public function getComment()
-    {
-        return $this->comment;
-    }
 
     /**
      * Set created
@@ -224,4 +183,50 @@ class File implements FileInterface
     }
 
 
+
+    /**
+     * Set post
+     *
+     * @param \Cvut\Fit\BiPwt\BlogBundle\Entity\Post $post
+     * @return File
+     */
+    public function setPost(\Cvut\Fit\BiPwt\BlogBundle\Entity\PostInterface $post = null)
+    {
+        $this->post = $post;
+
+        return $this;
+    }
+
+    /**
+     * Get post
+     *
+     * @return \Cvut\Fit\BiPwt\BlogBundle\Entity\Post 
+     */
+    public function getPost()
+    {
+        return $this->post;
+    }
+
+    /**
+     * Set comment
+     *
+     * @param \Cvut\Fit\BiPwt\BlogBundle\Entity\Comment $comment
+     * @return File
+     */
+    public function setComment(\Cvut\Fit\BiPwt\BlogBundle\Entity\CommentInterface $comment = null)
+    {
+        $this->comment = $comment;
+
+        return $this;
+    }
+
+    /**
+     * Get comment
+     *
+     * @return \Cvut\Fit\BiPwt\BlogBundle\Entity\Comment 
+     */
+    public function getComment()
+    {
+        return $this->comment;
+    }
 }

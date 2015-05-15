@@ -38,50 +38,6 @@ class Tag implements TagInterface
      */
     private $posts;
 
-    /**
-     * Nastavi ID tagu
-     *
-     * @param number $id
-     * @return TagInterface $this
-     */
-    public function setId($id)
-    {
-        // TODO: Implement setId() method.
-    }
-
-    /**
-     * Prida prispevek ke znacce
-     *
-     * @param PostInterface $post
-     * @return TagInterface $this
-     */
-    public function addPost(PostInterface $post)
-    {
-        // TODO: Implement addPost() method.
-    }
-
-    /**
-     * Vrati prispevky prirazene ke znacce
-     *
-     * @return Collection<PostInterface>
-     */
-    public function getPosts()
-    {
-        // TODO: Implement getPosts() method.
-    }
-
-    /**
-     *
-     * Odstrani prispevek od znacky
-     *
-     * @param PostInterface $post
-     * @return TagInterface $this
-     */
-    public function removePost(PostInterface $post)
-    {
-        // TODO: Implement removePost() method.
-    }
-
 
     /**
      * Get id
@@ -136,5 +92,51 @@ class Tag implements TagInterface
     {
         $this->posts = new \Doctrine\Common\Collections\ArrayCollection();
     }
+
+
+    /**
+     * Add posts
+     *
+     * @param \Cvut\Fit\BiPwt\BlogBundle\Entity\Post $posts
+     * @return Tag
+     */
+    public function addPost(\Cvut\Fit\BiPwt\BlogBundle\Entity\PostInterface $posts)
+    {
+        $this->posts[] = $posts;
+
+        return $this;
+    }
+
+    /**
+     * Remove posts
+     *
+     * @param \Cvut\Fit\BiPwt\BlogBundle\Entity\Post $posts
+     */
+    public function removePost(\Cvut\Fit\BiPwt\BlogBundle\Entity\PostInterface $posts)
+    {
+        $this->posts->removeElement($posts);
+    }
+
+    /**
+     * Get posts
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getPosts()
+    {
+        return $this->posts;
+    }
+
+    /**
+     * Nastavi ID tagu
+     *
+     * @param number $id
+     * @return TagInterface $this
+     */
+    public function setId($id)
+    {
+        // TODO: Implement setId() method.
+    }
+
 
 }

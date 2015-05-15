@@ -34,7 +34,13 @@ class User implements UserInterface, CoreUserInterface
      */
     private $password;
 
-
+    /**
+     * @var array
+     *
+     * @ORM\OneToMany(targetEntity="Cvut\Fit\BiPwt\BlogBundle\Entity\Post",
+     * mappedBy="author")
+     */
+    private $posts;
 
     /**
      * Get id
@@ -92,16 +98,7 @@ class User implements UserInterface, CoreUserInterface
         return $this->password;
     }
 
-    /**
-     * Prida prispevek uzivatele
-     *
-     * @param PostInterface $post
-     * @return UserInterface $this
-     */
-    public function addPost(PostInterface $post)
-    {
-        // TODO: Implement addPost() method.
-    }
+
 
     /**
      * Removes sensitive data from the user.
@@ -111,14 +108,6 @@ class User implements UserInterface, CoreUserInterface
      */
     public function eraseCredentials(){}
 
-    /**
-     * Vrati prispevky uzivatele
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getPosts()
-    {
-        // TODO: Implement getPosts() method.
-    }
 
     /**
      * Returns the roles granted to the user.
@@ -173,16 +162,45 @@ class User implements UserInterface, CoreUserInterface
     public function setId($id)
     {}
 
+
     /**
-     * Odstrani prispevek uzivatele
-     *
-     * @param PostInterface $post
-     * @return UserInterface $this
+     * Constructor
      */
-    public function removePost(PostInterface $post)
+    public function __construct()
     {
-        // TODO: Implement removePost() method.
+        $this->posts = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
+    /**
+     * Add posts
+     *
+     * @param \Cvut\Fit\BiPwt\BlogBundle\Entity\Post $posts
+     * @return User
+     */
+    public function addPost(\Cvut\Fit\BiPwt\BlogBundle\Entity\PostInterface $posts)
+    {
+        $this->posts[] = $posts;
 
+        return $this;
+    }
+
+    /**
+     * Remove posts
+     *
+     * @param \Cvut\Fit\BiPwt\BlogBundle\Entity\Post $posts
+     */
+    public function removePost(\Cvut\Fit\BiPwt\BlogBundle\Entity\PostInterface $posts)
+    {
+        $this->posts->removeElement($posts);
+    }
+
+    /**
+     * Get posts
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getPosts()
+    {
+        return $this->posts;
+    }
 }

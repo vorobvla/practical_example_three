@@ -40,7 +40,8 @@ class Post implements PostInterface
 
     /**
      * @var \stdClass
-     * @ORM\ManyToOne(targetEntity="Cvut\Fit\BiPwt\BlogBundle\Entity\User")
+     * @ORM\ManyToOne(targetEntity="Cvut\Fit\BiPwt\BlogBundle\Entity\User",
+     * inversedBy="posts")
      */
     private $author;
 

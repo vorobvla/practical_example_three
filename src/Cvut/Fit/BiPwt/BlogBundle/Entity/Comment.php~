@@ -352,4 +352,27 @@ class Comment #implements CommentInterface
     }
 
 
+
+    /**
+     * Add files
+     *
+     * @param \Cvut\Fit\BiPwt\BlogBundle\Entity\File $files
+     * @return Comment
+     */
+    public function addFile(\Cvut\Fit\BiPwt\BlogBundle\Entity\File $files)
+    {
+        $this->files[] = $files;
+
+        return $this;
+    }
+
+    /**
+     * Remove files
+     *
+     * @param \Cvut\Fit\BiPwt\BlogBundle\Entity\File $files
+     */
+    public function removeFile(\Cvut\Fit\BiPwt\BlogBundle\Entity\File $files)
+    {
+        $this->files->removeElement($files);
+    }
 }
