@@ -4,6 +4,10 @@ parameters:
 #    parameter_name: value
 
 services:
+     cvut_fit_ict_bipwt_blog_service:
+         class: Cvut\Fit\BiPwt\BlogBundle\Service\BlogService
+     cvut_fit_ict_bipwt_user_service:
+         class: Cvut\Fit\BiPwt\BlogBundle\Service\UserService
 #    service_name:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
