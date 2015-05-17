@@ -181,6 +181,7 @@ class User implements UserInterface, CoreUserInterface
     public function addPost(\Cvut\Fit\BiPwt\BlogBundle\Entity\PostInterface $posts)
     {
         $this->posts[] = $posts;
+        $posts->setAuthor($this);
 
         return $this;
     }
@@ -193,6 +194,7 @@ class User implements UserInterface, CoreUserInterface
     public function removePost(\Cvut\Fit\BiPwt\BlogBundle\Entity\PostInterface $posts)
     {
         $this->posts->removeElement($posts);
+    #    $posts->setAuthor(NULL);
     }
 
     /**

@@ -317,6 +317,7 @@ class Post implements PostInterface
     public function addComment(\Cvut\Fit\BiPwt\BlogBundle\Entity\CommentInterface $comments)
     {
         $this->comments[] = $comments;
+        $comments->setPost($this);
 
         return $this;
     }
@@ -328,6 +329,7 @@ class Post implements PostInterface
      */
     public function removeComment(\Cvut\Fit\BiPwt\BlogBundle\Entity\CommentInterface $comments)
     {
+    #    $comments->setPost(NULL);
         $this->comments->removeElement($comments);
     }
 
@@ -350,6 +352,7 @@ class Post implements PostInterface
     public function addFile(\Cvut\Fit\BiPwt\BlogBundle\Entity\FileInterface $files)
     {
         $this->files[] = $files;
+        $files->setPost($this);
 
         return $this;
     }
@@ -361,6 +364,7 @@ class Post implements PostInterface
      */
     public function removeFile(\Cvut\Fit\BiPwt\BlogBundle\Entity\FileInterface $files)
     {
+     #   $files->setPost(NULL);
         $this->files->removeElement($files);
     }
 
@@ -383,6 +387,9 @@ class Post implements PostInterface
     public function addTag(\Cvut\Fit\BiPwt\BlogBundle\Entity\TagInterface $tags)
     {
         $this->tags[] = $tags;
+        if(!$tags->getPosts()->contains($this)) {
+            $tags->addPost($this);
+        }
 
         return $this;
     }
@@ -394,6 +401,7 @@ class Post implements PostInterface
      */
     public function removeTag(\Cvut\Fit\BiPwt\BlogBundle\Entity\TagInterface $tags)
     {
+
         $this->tags->removeElement($tags);
     }
 

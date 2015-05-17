@@ -277,6 +277,7 @@ class Comment implements CommentInterface
     public function addChild(\Cvut\Fit\BiPwt\BlogBundle\Entity\CommentInterface $children)
     {
         $this->children[] = $children;
+        $children->setParent($this);
 
         return $this;
     }
@@ -288,6 +289,7 @@ class Comment implements CommentInterface
      */
     public function removeChild(\Cvut\Fit\BiPwt\BlogBundle\Entity\CommentInterface $children)
     {
+     #   $children->setParent(NULL);
         $this->children->removeElement($children);
     }
 
@@ -310,6 +312,7 @@ class Comment implements CommentInterface
     public function addFile(\Cvut\Fit\BiPwt\BlogBundle\Entity\FileInterface $files)
     {
         $this->files[] = $files;
+        $files->setComment($this);
 
         return $this;
     }

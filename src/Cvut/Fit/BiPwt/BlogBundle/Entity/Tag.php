@@ -103,6 +103,9 @@ class Tag implements TagInterface
     public function addPost(\Cvut\Fit\BiPwt\BlogBundle\Entity\PostInterface $posts)
     {
         $this->posts[] = $posts;
+        if(!$posts->getTags()->contains($this)) {
+            $posts->addTag($this);
+        }
 
         return $this;
     }
