@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="blog_comment")
  * @ORM\Entity
  */
-class Comment #implements CommentInterface
+class Comment implements CommentInterface
 {
     /**
      * @var integer
@@ -40,16 +40,16 @@ class Comment #implements CommentInterface
     /**
      * @var \stdClass
      *
-     * @ORM\OneToMany(targetEntity="Cvut\Fit\BiPwt\BlogBundle\Entity\Comment",
-     * mappedBy="children")
+     * @ORM\ManyToOne(targetEntity="Cvut\Fit\BiPwt\BlogBundle\Entity\Comment",
+     * inversedBy="children")
      */
     private $parent;
 
     /**
      * @var array
      *
-     * @ORM\ManyToOne(targetEntity="Cvut\Fit\BiPwt\BlogBundle\Entity\Comment",
-     * inversedBy="parent")
+     * @ORM\OneToMany(targetEntity="Cvut\Fit\BiPwt\BlogBundle\Entity\Comment",
+     * mappedBy="parent")
      */
     private $children;
 
@@ -88,9 +88,14 @@ class Comment #implements CommentInterface
      * @ORM\Column(name="spam", type="boolean")
      */
     private $spam;
-
-
-
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->children = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->files = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -100,29 +105,6 @@ class Comment #implements CommentInterface
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set author
-     *
-     * @param \stdClass $author
-     * @return Comment
-     */
-    public function setAuthor(UserInterface $author)
-    {
-        $this->author = $author;
-
-        return $this;
-    }
-
-    /**
-     * Get author
-     *
-     * @return \stdClass 
-     */
-    public function getAuthor()
-    {
-        return $this->author;
     }
 
     /**
@@ -146,29 +128,6 @@ class Comment #implements CommentInterface
     public function getPost()
     {
         return $this->post;
-    }
-
-    /**
-     * Set parent
-     *
-     * @param \stdClass $parent
-     * @return Comment
-     */
-    public function setParent(CommentInterface $parent)
-    {
-        $this->parent = $parent;
-
-        return $this;
-    }
-
-    /**
-     * Get parent
-     *
-     * @return \stdClass 
-     */
-    public function getParent()
-    {
-        return $this->parent;
     }
 
     /**
@@ -240,7 +199,6 @@ class Comment #implements CommentInterface
         return $this->modified;
     }
 
-
     /**
      * Set spam
      *
@@ -265,75 +223,78 @@ class Comment #implements CommentInterface
     }
 
     /**
-     * Set children
+     * Set author
      *
-     * @param array $children
+     * @param \Cvut\Fit\BiPwt\BlogBundle\Entity\User $author
      * @return Comment
      */
-    public function setChildren($children)
+    public function setAuthor(\Cvut\Fit\BiPwt\BlogBundle\Entity\UserInterface $author = null)
     {
-        $this->children = $children;
+        $this->author = $author;
 
         return $this;
     }
 
     /**
-     * Set files
+     * Get author
      *
-     * @param array $files
-     * @return Comment
+     * @return \Cvut\Fit\BiPwt\BlogBundle\Entity\User 
      */
-    public function setFiles($files)
+    public function getAuthor()
     {
-        $this->files = $files;
-
-        return $this;
-    }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->parent = new \Doctrine\Common\Collections\ArrayCollection();
+        return $this->author;
     }
 
     /**
-     * Get files
-     *
-     * @return array 
-     */
-    public function getFiles()
-    {
-        return $this->files;
-    }
-
-    /**
-     * Add parent
+     * Set parent
      *
      * @param \Cvut\Fit\BiPwt\BlogBundle\Entity\Comment $parent
      * @return Comment
      */
-    public function addParent(\Cvut\Fit\BiPwt\BlogBundle\Entity\Comment $parent)
+    public function setParent(\Cvut\Fit\BiPwt\BlogBundle\Entity\CommentInterface $parent = null)
     {
-        $this->parent[] = $parent;
+        $this->parent = $parent;
 
         return $this;
     }
 
     /**
-     * Remove parent
+     * Get parent
      *
-     * @param \Cvut\Fit\BiPwt\BlogBundle\Entity\Comment $parent
+     * @return \Cvut\Fit\BiPwt\BlogBundle\Entity\Comment 
      */
-    public function removeParent(\Cvut\Fit\BiPwt\BlogBundle\Entity\Comment $parent)
+    public function getParent()
     {
-        $this->parent->removeElement($parent);
+        return $this->parent;
+    }
+
+    /**
+     * Add children
+     *
+     * @param \Cvut\Fit\BiPwt\BlogBundle\Entity\Comment $children
+     * @return Comment
+     */
+    public function addChild(\Cvut\Fit\BiPwt\BlogBundle\Entity\CommentInterface $children)
+    {
+        $this->children[] = $children;
+
+        return $this;
+    }
+
+    /**
+     * Remove children
+     *
+     * @param \Cvut\Fit\BiPwt\BlogBundle\Entity\Comment $children
+     */
+    public function removeChild(\Cvut\Fit\BiPwt\BlogBundle\Entity\CommentInterface $children)
+    {
+        $this->children->removeElement($children);
     }
 
     /**
      * Get children
      *
-     * @return \Cvut\Fit\BiPwt\BlogBundle\Entity\Comment 
+     * @return \Doctrine\Common\Collections\Collection 
      */
     public function getChildren()
     {
@@ -341,25 +302,12 @@ class Comment #implements CommentInterface
     }
 
     /**
-     * Nastavi ID komentare
-     *
-     * @param mixed $id
-     * @return CommentInterface $this
-     */
-    public function setId($id)
-    {
-        // TODO: Implement setId() method.
-    }
-
-
-
-    /**
      * Add files
      *
      * @param \Cvut\Fit\BiPwt\BlogBundle\Entity\File $files
      * @return Comment
      */
-    public function addFile(\Cvut\Fit\BiPwt\BlogBundle\Entity\File $files)
+    public function addFile(\Cvut\Fit\BiPwt\BlogBundle\Entity\FileInterface $files)
     {
         $this->files[] = $files;
 
@@ -371,8 +319,27 @@ class Comment #implements CommentInterface
      *
      * @param \Cvut\Fit\BiPwt\BlogBundle\Entity\File $files
      */
-    public function removeFile(\Cvut\Fit\BiPwt\BlogBundle\Entity\File $files)
+    public function removeFile(\Cvut\Fit\BiPwt\BlogBundle\Entity\FileInterface $files)
     {
         $this->files->removeElement($files);
     }
+
+    /**
+     * Get files
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getFiles()
+    {
+        return $this->files;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
 }

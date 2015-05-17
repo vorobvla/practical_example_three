@@ -179,7 +179,7 @@ class File implements FileInterface
      */
     public function setId($id)
     {
-        // TODO: Implement setId() method.
+        $this->id = $id;
     }
 
 

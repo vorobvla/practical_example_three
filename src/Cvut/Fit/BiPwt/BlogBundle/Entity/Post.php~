@@ -415,8 +415,7 @@ class Post implements PostInterface
      */
     public function setId($id)
     {
-        // TODO: Implement setId() method.
+        $this->id = $id;
     }
-
 
 }

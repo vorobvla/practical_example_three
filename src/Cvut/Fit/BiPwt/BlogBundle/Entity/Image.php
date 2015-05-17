@@ -13,13 +13,13 @@ use Doctrine\ORM\Mapping as ORM;
 class Image extends File implements ImageInterface
 {
     /**
-     * @var integer
+     a* @var integer
      *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     a* @ORM\Column(name="id", type="integer")
+     a* @ORM\Id
+     a* @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    //private $id;
 
     /**
      * @var integer
@@ -46,12 +46,12 @@ class Image extends File implements ImageInterface
     /**
      * Get id
      *
-     * @return integer 
+     a* @return integer
      */
-    public function getId()
+ /*   public function getId()
     {
         return $this->id;
-    }
+    }*/
 
     /**
      * Set dimensionX

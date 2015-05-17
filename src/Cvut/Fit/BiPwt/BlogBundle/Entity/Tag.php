@@ -135,7 +135,7 @@ class Tag implements TagInterface
      */
     public function setId($id)
     {
-        // TODO: Implement setId() method.
+        $this->id = $id;
     }
 
 

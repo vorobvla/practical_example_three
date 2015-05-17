@@ -159,8 +159,9 @@ class User implements UserInterface, CoreUserInterface
      * @param number $id
      * @return UserInterface $this
      */
-    public function setId($id)
-    {}
+    public function setId($id){
+        $this->id = $id;
+    }
 
 
     /**
