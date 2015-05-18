@@ -125,7 +125,7 @@ class DoctrineDecorators {
      * @param Criteria $criteria
      * @return Collection<UserEntityInterface>
      */
-    public function findBy($repostiorty, Criteria $criteria)
+    public function findBy($repostiorty, $criteria)
     {
         return $this->em->getRepository($repostiorty)
             ->matching($criteria);
