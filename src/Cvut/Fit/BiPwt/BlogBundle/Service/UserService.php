@@ -10,25 +10,32 @@ namespace Cvut\Fit\BiPwt\BlogBundle\Service;
 
 use Cvut\Fit\BiPwt\BlogBundle\Entity\User;
 use Cvut\Fit\BiPwt\BlogBundle\Entity\UserInterface as UserEntityInterface;
+use Cvut\Fit\BiPwt\BlogBundle\Exception\ItemAlreadyExistsException;
 use Cvut\Fit\BiPwt\BlogBundle\Service\UserInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\DependencyInjection\Container;
 
 class UserService implements  UserInterface{
 
-    /**
-     * @var EntityManager
-     */
-    protected $em;
     protected $defPasswd = "1111";
 
+    /**
+     * @var DoctrineDecorators
+     */
+    protected $doctrine;
+
+    /**
+     * @param $em
+     */
     function __construct($em)
     {
-        $this->em = $em;
+        DoctrineDecorators::getInstance()->setEm($em);
+        $this->doctrine = DoctrineDecorators::getInstance();
     }
-
 
     /**
      * Vytvori a vrati uzivatele
@@ -39,13 +46,13 @@ class UserService implements  UserInterface{
      */
     public function create($id, $name)
     {
+
         $newUser = new User();
         //$newUser->setId($id);
         $newUser->setName($name);
         $newUser->setPassword($this->defPasswd);
-        $this->em->persist($newUser);
-        $this->em->flush();
-        return $newUser;
+
+        return $this->doctrine->create($newUser);
     }
 
     /**
@@ -56,7 +63,7 @@ class UserService implements  UserInterface{
      */
     public function update(UserEntityInterface $user)
     {
-        $this->em->flush();
+        return $this->doctrine->update($user);
     }
 
     /**
@@ -67,9 +74,7 @@ class UserService implements  UserInterface{
      */
     public function delete(UserEntityInterface $user)
     {
-        $this->em->remove($user);
-        $this->em->flush();
-        return $user;
+        return $this->doctrine->delete($user);
     }
 
     /**
@@ -80,8 +85,7 @@ class UserService implements  UserInterface{
      */
     public function find($id)
     {
-        return $this->em->find('Cvut\Fit\BiPwt\BlogBundle\Entity\User', $id);
-
+        return $this->doctrine->find('Cvut\Fit\BiPwt\BlogBundle\Entity\User', $id);
     }
 
     /**
@@ -91,8 +95,7 @@ class UserService implements  UserInterface{
      */
     public function findAll()
     {
-        return $this->em->getRepository('Cvut\Fit\BiPwt\BlogBundle\Entity\User')
-            ->findAll();
+        return $this->doctrine->findAll('Cvut\Fit\BiPwt\BlogBundle\Entity\User');
     }
 
     /**
@@ -103,10 +106,7 @@ class UserService implements  UserInterface{
      */
     public function findBy(Criteria $criteria)
     {
-        return $this->em->getRepository('Cvut\Fit\BiPwt\BlogBundle\Entity\User')
-            ->findBy($criteria);
+        return $this->doctrine->findBy('Cvut\Fit\BiPwt\BlogBundle\Entity\User', $criteria);
     }
-
-
 
 }

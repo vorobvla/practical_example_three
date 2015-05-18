@@ -20,23 +20,18 @@ use Doctrine\ORM\EntityManager;
 class BlogService implements BlogInterface {
 
     /**
-     * @var EntityManager
+     * @var DoctrineDecorators
      */
-    protected $em;
-
-    function __construct($em)
-    {
-        $this->em = $em;
-    }
+    protected $doctrine;
 
     /**
-     * @param mixed $em
+     * @param $em
      */
-    public function setEntityManager($em)
+    function __construct($em)
     {
-        $this->em = $em;
+        DoctrineDecorators::getInstance()->setEm($em);
+        $this->doctrine = DoctrineDecorators::getInstance();
     }
-
 
 
 
@@ -48,9 +43,7 @@ class BlogService implements BlogInterface {
      */
     public function createPost(PostInterface $post)
     {
-        $this->em->persist($post);
-        $this->em->flush();
-        return $post;
+        return $this->doctrine->create($post);
     }
 
     /**
@@ -61,8 +54,7 @@ class BlogService implements BlogInterface {
      */
     public function updatePost(PostInterface $post)
     {
-
-        //return $post;
+        return $this->doctrine->update($post);
     }
 
     /**
@@ -73,10 +65,20 @@ class BlogService implements BlogInterface {
      */
     public function deletePost(PostInterface $post)
     {
-        $this->em->remove($post);
-        $this->em->flush();
-        return $post;
+        #eliminating 1:n
+        foreach ($post->getFiles() as $file){
+            $this->deleteFile($file);
+        }
+        foreach ($post->getComments() as $comment){
+            $this->deleteComment($comment);
+        }
+        #eliminating n:*
+        return $this->doctrine->delete($post, array(
+            getAuthor() => removePost($post),
+            getTags() => removePost($post),
+        ));
     }
+    //TODO: remove flush when it is not needed
 
     /**
      * Najde prispevek podle ID a vrati
@@ -86,8 +88,7 @@ class BlogService implements BlogInterface {
      */
     public function findPost($id)
     {
-        return $this->em->getRepository('Cvut\Fit\BiPwt\BlogBundle\Entity\Post')
-            ->find($id);
+        return $this->doctrine->find('Cvut\Fit\BiPwt\BlogBundle\Entity\Post', $id);
     }
 
     /**
@@ -97,7 +98,7 @@ class BlogService implements BlogInterface {
      */
     public function findAllPosts()
     {
-        // TODO: Implement findAllPosts() method.
+        return $this->doctrine->findAll('Cvut\Fit\BiPwt\BlogBundle\Entity\Post');
     }
 
     /**
@@ -108,7 +109,7 @@ class BlogService implements BlogInterface {
      */
     public function findPostBy(Criteria $criteria)
     {
-        // TODO: Implement findPostBy() method.
+        return $this->doctrine->findBy('Cvut\Fit\BiPwt\BlogBundle\Entity\Post', $criteria);
     }
 
     /**
@@ -144,9 +145,7 @@ class BlogService implements BlogInterface {
      */
     public function createTag(TagInterface $tag)
     {
-        /*$this->em->persist($tag);
-        $this->em->flush();
-        return $tag;*/
+        return $this->doctrine->create($tag);
     }
 
     /**
@@ -157,7 +156,7 @@ class BlogService implements BlogInterface {
      */
     public function updateTag(TagInterface $tag)
     {
-        // TODO: Implement updateTag() method.
+        return $this->doctrine->update($tag);
     }
 
     /**
@@ -168,7 +167,7 @@ class BlogService implements BlogInterface {
      */
     public function deleteTag(TagInterface $tag)
     {
-        // TODO: Implement deleteTag() method.
+        return $this->doctrine->delete($tag);
     }
 
     /**
@@ -179,7 +178,7 @@ class BlogService implements BlogInterface {
      */
     public function findTag($id)
     {
-        // TODO: Implement findTag() method.
+        return $this->doctrine->find('Cvut\Fit\BiPwt\BlogBundle\Entity\Tag', $id);
     }
 
     /**
@@ -187,7 +186,7 @@ class BlogService implements BlogInterface {
      */
     public function findAllTags()
     {
-        // TODO: Implement findAllTags() method.
+        return $this->doctrine->findAll('Cvut\Fit\BiPwt\BlogBundle\Entity\Tag');
     }
 
     /**
@@ -198,7 +197,7 @@ class BlogService implements BlogInterface {
      */
     public function findTagBy(Criteria $criteria)
     {
-        // TODO: Implement findTagBy() method.
+        return $this->doctrine->findBy('Cvut\Fit\BiPwt\BlogBundle\Entity\Tag', $criteria);
     }
 
     /**
