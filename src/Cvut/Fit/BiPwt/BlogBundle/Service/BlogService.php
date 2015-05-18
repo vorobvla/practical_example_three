@@ -73,10 +73,11 @@ class BlogService implements BlogInterface {
             $this->deleteComment($comment);
         }
         #eliminating n:*
-        return $this->doctrine->delete($post, array(
-            getAuthor() => removePost($post),
-            getTags() => removePost($post),
-        ));
+        $post->getAuthor()->removePost($post);
+        foreach ($post->getTags() as $tag){
+            $tag->removePost($post);
+        }
+        return $this->doctrine->delete($post);
     }
     //TODO: remove flush when it is not needed
 

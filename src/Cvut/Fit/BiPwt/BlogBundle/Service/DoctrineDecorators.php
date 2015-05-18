@@ -85,17 +85,10 @@ class DoctrineDecorators {
     /**
      * Delete  Entity
      * @param $entity
-     * @param array $removeAssociation   val = other side entity getter, key = method to be ran by other side,
      * @return mixed
      */
-    public function delete($entity, array $removeAssociation = NULL)
+    public function delete($entity)
     {
-        #elomonating associations bef
-        if ($removeAssociation != NULL) {
-            foreach ($removeAssociation as $getOtherSide => $doOnThis) {
-                $entity->$getOtherSide->$doOnThis;
-            }
-        }
         $this->em->remove($entity);
         $this->em->flush();
         return $entity;
