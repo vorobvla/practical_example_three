@@ -6,8 +6,10 @@ parameters:
 services:
      cvut_fit_ict_bipwt_blog_service:
          class: Cvut\Fit\BiPwt\BlogBundle\Service\BlogService
+         arguments: ["@doctrine.orm.entity_manager"]
      cvut_fit_ict_bipwt_user_service:
          class: Cvut\Fit\BiPwt\BlogBundle\Service\UserService
+         arguments: ["@doctrine.orm.entity_manager"]
 #    service_name:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]

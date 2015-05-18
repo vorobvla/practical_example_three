@@ -24,6 +24,11 @@ class BlogService implements BlogInterface {
      */
     protected $em;
 
+    function __construct($em)
+    {
+        $this->em = $em;
+    }
+
     /**
      * @param mixed $em
      */
@@ -31,6 +36,8 @@ class BlogService implements BlogInterface {
     {
         $this->em = $em;
     }
+
+
 
 
     /**
@@ -42,7 +49,8 @@ class BlogService implements BlogInterface {
     public function createPost(PostInterface $post)
     {
         $this->em->persist($post);
-        $this->flush();
+        $this->em->flush();
+        return $post;
     }
 
     /**
@@ -53,7 +61,8 @@ class BlogService implements BlogInterface {
      */
     public function updatePost(PostInterface $post)
     {
-        //TODO
+
+        //return $post;
     }
 
     /**
@@ -64,8 +73,9 @@ class BlogService implements BlogInterface {
      */
     public function deletePost(PostInterface $post)
     {
-        // TODO: Implement deletePost() method.
-
+        $this->em->remove($post);
+        $this->em->flush();
+        return $post;
     }
 
     /**
@@ -134,7 +144,9 @@ class BlogService implements BlogInterface {
      */
     public function createTag(TagInterface $tag)
     {
-        // TODO: Implement createTag() method.
+        /*$this->em->persist($tag);
+        $this->em->flush();
+        return $tag;*/
     }
 
     /**

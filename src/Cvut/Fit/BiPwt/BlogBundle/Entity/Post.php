@@ -50,7 +50,7 @@ class Post implements PostInterface
      *
      * @ORM\Column(name="private", type="boolean")
      */
-    private $private;
+    private $private = true;
 
     /**
      * @var \DateTime

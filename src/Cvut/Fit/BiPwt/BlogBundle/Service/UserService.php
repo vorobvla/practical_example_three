@@ -8,55 +8,80 @@
 
 namespace Cvut\Fit\BiPwt\BlogBundle\Service;
 
-use Cvut\Fit\BiPwt\BlogBundle\Entity\UserInterface as EntityInterface;
+use Cvut\Fit\BiPwt\BlogBundle\Entity\User;
+use Cvut\Fit\BiPwt\BlogBundle\Entity\UserInterface as UserEntityInterface;
 use Cvut\Fit\BiPwt\BlogBundle\Service\UserInterface;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 
+use Doctrine\ORM\EntityManager;
+
 class UserService implements  UserInterface{
+
+    /**
+     * @var EntityManager
+     */
+    protected $em;
+    protected $defPasswd = "1111";
+
+    function __construct($em)
+    {
+        $this->em = $em;
+    }
+
+
     /**
      * Vytvori a vrati uzivatele
      *
      * @param $id
      * @param $name
-     * @return EntityInterface
+     * @return UserEntityInterface
      */
     public function create($id, $name)
     {
-        // TODO: Implement create() method.
+        $newUser = new User();
+        //$newUser->setId($id);
+        $newUser->setName($name);
+        $newUser->setPassword($this->defPasswd);
+        $this->em->persist($newUser);
+        $this->em->flush();
+        return $newUser;
     }
 
     /**
      * Aktualizuje uzivatele a vrati
      *
-     * @param EntityInterface $user
-     * @return EntityInterface
+     * @param UserEntityInterface $user
+     * @return UserEntityInterface
      */
-    public function update(EntityInterface $user)
+    public function update(UserEntityInterface $user)
     {
-        // TODO: Implement update() method.
+        $this->em->flush();
     }
 
     /**
      * Odstrani uzivatele a vrati jej
      *
-     * @param EntityInterface $user
-     * @return EntityInterface
+     * @param UserEntityInterface $user
+     * @return UserEntityInterface
      */
-    public function delete(EntityInterface $user)
+    public function delete(UserEntityInterface $user)
     {
-        // TODO: Implement delete() method.
+        $this->em->remove($user);
+        $this->em->flush();
+        return $user;
     }
 
     /**
      * Najde uzivatele podle ID
      *
      * @param $id
-     * @return EntityInterface
+     * @return UserEntityInterface
      */
     public function find($id)
     {
-        // TODO: Implement find() method.
+        return $this->em->find('Cvut\Fit\BiPwt\BlogBundle\Entity\User', $id);
+
     }
 
     /**
@@ -66,18 +91,22 @@ class UserService implements  UserInterface{
      */
     public function findAll()
     {
-        // TODO: Implement findAll() method.
+        return $this->em->getRepository('Cvut\Fit\BiPwt\BlogBundle\Entity\User')
+            ->findAll();
     }
 
     /**
      * Najde uzivatele podle kriterii
      *
      * @param Criteria $criteria
-     * @return Collection<EntityInterface>
+     * @return Collection<UserEntityInterface>
      */
     public function findBy(Criteria $criteria)
     {
-        // TODO: Implement findBy() method.
+        return $this->em->getRepository('Cvut\Fit\BiPwt\BlogBundle\Entity\User')
+            ->findBy($criteria);
     }
+
+
 
 }
