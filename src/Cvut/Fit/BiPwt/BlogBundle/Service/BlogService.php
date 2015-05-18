@@ -124,7 +124,16 @@ class BlogService implements BlogInterface {
     public function addComment(PostInterface $post, CommentInterface $comment,
                                CommentInterface $parentComment = NULL)
     {
-        // TODO: Implement addComment() method.
+        $comment->setPost($post);
+        $post->addComment($comment);
+
+        $comment->setParent($parentComment);
+        if ($parentComment != NULL){
+            $parentComment->addChild($comment);
+        }
+
+        $this->doctrine->create($comment);
+        return $post;
     }
 
     /**
@@ -135,7 +144,17 @@ class BlogService implements BlogInterface {
      */
     public function deleteComment(CommentInterface $comment)
     {
-        // TODO: Implement deleteComment() method.
+        $comment->getPost()->removeComment($comment);
+        foreach ($comment->getFiles() as $file){
+            $this->deleteFile($file);
+        }
+        $parent = $comment->getParent();
+        foreach ($comment->getChildren() as $child){
+            $child->setParent($parent);
+        }
+
+        $this->doctrine->delete($comment);
+        return $comment->getPost();
     }
 
     /**
@@ -212,7 +231,16 @@ class BlogService implements BlogInterface {
     public function addPostFile(FileInterface $file, PostInterface $post,
                                 CommentInterface $comment = NULL)
     {
-        // TODO: Implement addPostFile() method.
+        $file->setPost($post);
+        $post->addFile($file);
+
+        $file->setComment($comment);
+        if ($comment != NULL){
+            $comment->addFile($file);
+        }
+
+        $this->doctrine->create($file);
+        return $post;
     }
 
     /**
@@ -223,7 +251,13 @@ class BlogService implements BlogInterface {
      */
     public function deleteFile(FileInterface $file)
     {
-        // TODO: Implement deleteFile() method.
+        $file->getPost()->removeFile($file);
+        if ($file->getComment() != NULL) {
+            $file->getComment()->removeFile($file);
+        }
+
+        $this->doctrine->delete($file);
+        return $file->getPost();
     }
 
 }
