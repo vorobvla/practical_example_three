@@ -1,0 +1,25 @@
+{% extends "::base.html.twig" %}
+
+{% block body %}
+    <h1>{{ post.getTitle }}</h1>
+    <p>By {{ post.getAuthor.getName }}</p>
+    {% if (post.private) %}
+        <p>This post is private</p>
+    {% endif %}
+    {% if (post.getCreated != NULL) %}
+        <p>Created on {{ post.getCreated.format(datetime_fmt) }}</p>
+    {% endif %}
+    {% if (post.getModified != NULL) %}
+        <p>Modified on {{ post.getModified.format(datetime_fmt) }}</p>
+    {% endif %}
+    {% if ((post.publishFrom != NULL) and (post.publishTo != NULL))%}
+        <p>Published from {{ post.publishFrom.format(datetime_fmt) }}
+        till {{ post.publishTo.format(datetime_fmt) }} </p>
+        {% elseif (post.publishFrom != NULL) %}
+            <p>Published from {{ post.publishFrom.format(datetime_fmt) }}</p>
+        {% elseif (post.publishTo != NULL) %}
+            <p>Published till {{ post.publishTo.format(datetime_fmt) }}</p>
+    <p>Published from {{ post.publishFrom.format(datetime_fmt) }}</p>
+    {% endif %}
+    <p>{{ post.getText }}</p>
+{% endblock %}
