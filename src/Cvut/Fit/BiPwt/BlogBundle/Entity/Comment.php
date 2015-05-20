@@ -25,15 +25,15 @@ class Comment implements CommentInterface
     /**
      * @var \stdClass
      *
-     * @ORM\ManyToOne(targetEntity="Cvut\Fit\BiPwt\BlogBundle\Entity\User",
-     * inversedBy="")
+     * @ORM\ManyToOne(targetEntity="Cvut\Fit\BiPwt\BlogBundle\Entity\User")
      */
     private $author;
 
     /**
      * @var \stdClass
      *
-     * @ORM\Column(name="post", type="object")
+     * @ORM\ManyToOne(targetEntity="Cvut\Fit\BiPwt\BlogBundle\Entity\Post",
+     * inversedBy="comments")
      */
     private $post;
 
@@ -110,7 +110,7 @@ class Comment implements CommentInterface
     /**
      * Set post
      *
-     * @param \stdClass $post
+     * @param \Cvut\Fit\BiPwt\BlogBundle\Entity\Post
      * @return Comment
      */
     public function setPost(PostInterface $post)
@@ -123,7 +123,7 @@ class Comment implements CommentInterface
     /**
      * Get post
      *
-     * @return \stdClass 
+     * @return \Cvut\Fit\BiPwt\BlogBundle\Entity\Post
      */
     public function getPost()
     {
