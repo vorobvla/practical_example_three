@@ -7,23 +7,31 @@
     </h3>
     <hr/>
     <h2>List of posts</h2>
-    <ul>
+    <table border="0">
     {%  for  p in posts  %}
-        <li>
+        <tr>
             {# post title -> post details #}
+            <td>
             <a href="{{ path('post', {id:p.getId}) }}"><b>{{ p.getTitle }}</b></a>
+            </td>
             {# post author -> filter posts by author #}
+            <td>
             by <a href="{{ path('index', {filterAuthorId:p.getAuthor.getId}) }}">
             {{ p.getAuthor.getName }}</a>
+            </td>
             {# tags #}
+            <td>
             ({% for t in p.getTags %}
                 <a href="{{ path('index', {filterAuthorId:p.getAuthor.getId}) }}">
                     {{ t.getTitle }}
                 </a>
             {% endfor %})
+            </td>
             {# remove this post #}
+            <td>
             <a href="{{ path('remove', {id:p.getId}) }}">[remove this post]</a>
-        </li>
+            </td>
+        </tr>
     {%  endfor %}
-    </ul>
+    </table>
 {% endblock %}

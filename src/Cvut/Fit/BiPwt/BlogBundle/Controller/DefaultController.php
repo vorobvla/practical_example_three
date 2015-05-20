@@ -19,7 +19,9 @@ class DefaultController extends Controller
 
 
     /**
-     * @Route("/{filterAuthorId}/{filterTagId}", name="index")
+     * @Route("/{filterAuthorId}/{filterTagId}",
+     * requirements={"filterAuthorId" = "\d+",
+     * "filterTagId" = "\d+"}, name="index")
      * @Template()
      *
      * @return array
@@ -46,7 +48,7 @@ class DefaultController extends Controller
 
     /**
      * @Route("/newPost", name="newPost")
-     * @Template
+     * @Template()
      */
     public function newPostAction(Request $request){
         $post = new Post();
@@ -83,17 +85,18 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/removePost/{id}", name="remove")
+     * @Route("/removePost/{id}", requirements={"id" = "\d+"}, name="remove")
+     * @Template()
      */
-    public function removePost($id){
+    public function removePostAction($id){
         $post = $this->get('cvut_fit_ict_bipwt_blog_service')->findPost($id);
         $this->get('cvut_fit_ict_bipwt_blog_service')->deletePost($post);
         return $this->redirectToRoute('index');
     }
 
     /**
-     * @Route("/post/{id}", name="post")
-     * @Template
+     * @Route("/post/{id}", requirements={"id" = "\d+"}, name="post")
+     * @Template()
      */
     public function detailAction($id, Request $request){
 
