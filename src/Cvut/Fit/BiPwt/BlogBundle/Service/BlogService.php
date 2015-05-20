@@ -16,6 +16,9 @@ use Cvut\Fit\BiPwt\BlogBundle\Entity\TagInterface;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\Validator\Constraints\DateTime;
+
+#use Symfony\Component\Validator\Constraints\DateTime;
 
 class BlogService implements BlogInterface {
 
@@ -43,6 +46,9 @@ class BlogService implements BlogInterface {
      */
     public function createPost(PostInterface $post)
     {
+        $ts = new \DateTime("now");
+        $post->setCreated($ts);
+        $post->setModified($ts);
         return $this->doctrine->create($post);
     }
 
@@ -54,6 +60,7 @@ class BlogService implements BlogInterface {
      */
     public function updatePost(PostInterface $post)
     {
+        $post->setModified(new \DateTime("now"));
         return $this->doctrine->update($post);
     }
 

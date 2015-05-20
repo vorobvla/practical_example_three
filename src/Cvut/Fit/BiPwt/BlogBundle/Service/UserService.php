@@ -35,6 +35,7 @@ class UserService implements  UserInterface{
     {
         DoctrineDecorators::getInstance()->setEm($em);
         $this->doctrine = DoctrineDecorators::getInstance();
+
     }
 
     /**

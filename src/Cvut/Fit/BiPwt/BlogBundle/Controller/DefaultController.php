@@ -2,14 +2,18 @@
 
 namespace Cvut\Fit\BiPwt\BlogBundle\Controller;
 
+use Cvut\Fit\BiPwt\BlogBundle\Entity\Post;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DomCrawler\Field;
 
 
 class DefaultController extends Controller
 {
+
+    const DEFAULT_POST_TITLE = "Untitled Post";
     /**
      * @Route("/", name="index")
      * @Template()
@@ -25,28 +29,45 @@ class DefaultController extends Controller
             $postTitles[] = $post->getTitle();
         }*/
 
-        return ["posts" => $this->container->get('cvut_fit_ict_bipwt_blog_service')
-            ->findAllPosts()];
+        return [
+            "posts" => $this->container->get('cvut_fit_ict_bipwt_blog_service')
+            ->findAllPosts()
+        ];
     }
 
     /**
-     * @Route("/insert")
+     * @Route("/newPost", name="newPost")
      * @Template
      */
-    public function insertAction(){
+    public function newPostAction(Request $request){
         $post = new Post();
-        $post->setTitle("Post Title " . uniqid());
-        $post->setText("Post Text " . uniqid());
+        $form = $this->createFormBuilder($post)
+            ->add('title', 'text')
+            ->add('text', 'textarea')
+            ->add('files', 'collection', array(
+                'type' => 'file',
+                'label' => "Attachment",
+                'allow_add' => true,
+                'allow_delete' => true)
+            )
+            ->add('private', 'checkbox', array(
+                'label' => "Publish As Private Post")
+            )
+            ->add('publishFrom', 'datetime')
+            ->add('publishTo', 'datetime', array(
+                'label' => "Publish Till")
+            )
+            ->add('Publish', 'submit')
+            ->getForm();
 
-        $em = $this->get("doctrine.orm.default_entity_manager");
-
-        $comment = new Comment();
-
-        $em->persist($post);
-        $em->flush();
-
+        $form->handleRequest($request);
+        if ($form->isSubmitted()){
+            $this->get('cvut_fit_ict_bipwt_blog_service')->createPost($post);
+            return $this->redirectToRoute('index');
+        }
         return[
-            'post' => $post
+            'form' => $form->createView(),
+            'asd' => ''
         ];
 
     }

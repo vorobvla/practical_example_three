@@ -1,11 +1,15 @@
 {% extends "::base.html.twig" %}
 
 {% block body %}
+    <h3>
+        <a href="{{ path('newPost') }}"> Publish New Post </a>
+    </h3>
+    <hr/>
     <h2>List of posts</h2>
-<ul>
-{%  for  p in posts  %}
-    <li> <a href="{{ path('post', {id:p.getId}) }}">
-            {{ p.getTitle }}</a> by {{ p.getAuthor.getName }}</li>
-{%  endfor %}
-</ul>
+    <ul>
+    {%  for  p in posts  %}
+        <li> <a href="{{ path('post', {id:p.getId}) }}">
+                {{ p.getTitle }}</a> by {{ p.getAuthor.getName }}</li>
+    {%  endfor %}
+    </ul>
 {% endblock %}
