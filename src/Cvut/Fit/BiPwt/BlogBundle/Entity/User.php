@@ -25,7 +25,8 @@ class User implements UserInterface, CoreUserInterface
     private $id;
 
     /**
-     * @ORM\Column(type="string")
+     *
+     * @ORM\Column(name="name", type="string")
      */
     private $name;
 

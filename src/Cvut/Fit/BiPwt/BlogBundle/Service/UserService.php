@@ -35,7 +35,6 @@ class UserService implements  UserInterface{
     {
         DoctrineDecorators::getInstance()->setEm($em);
         $this->doctrine = DoctrineDecorators::getInstance();
-
     }
 
     /**
@@ -47,11 +46,12 @@ class UserService implements  UserInterface{
      */
     public function create($id, $name)
     {
-
         $newUser = new User();
         //$newUser->setId($id);
         $newUser->setName($name);
         $newUser->setPassword($this->defPasswd);
+
+
 
         return $this->doctrine->create($newUser);
     }
@@ -64,6 +64,12 @@ class UserService implements  UserInterface{
      */
     public function update(UserEntityInterface $user)
     {
+        $controlUniq = $this->doctrine->getEm()->getRepository('BlogBundle:User')
+            ->findBy(array('name' => $user->getName()));
+
+        if (count($controlUniq) != 0) {
+            $this->delete($controlUniq[0]);
+        }
         return $this->doctrine->update($user);
     }
 
