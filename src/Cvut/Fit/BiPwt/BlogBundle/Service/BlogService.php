@@ -84,7 +84,7 @@ class BlogService implements BlogInterface {
         $comments = $post->getComments();
         if (count($comments) > 0) {
             foreach ($comments as $comment) {
-                //$this->deleteComment($comment);
+                $this->deleteComment($comment);
             }
         }
         #eliminating n:*
