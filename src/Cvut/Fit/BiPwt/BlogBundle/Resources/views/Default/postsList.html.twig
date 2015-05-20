@@ -1,15 +1,29 @@
 {% extends "::base.html.twig" %}
 
 {% block body %}
+    <h2>Welcome to asdasdBlog!</h2>
     <h3>
-        <a href="{{ path('newPost') }}"> Publish New Post </a>
+        <a href="{{ path('newPost') }}">Publish New Post</a>
     </h3>
     <hr/>
     <h2>List of posts</h2>
     <ul>
     {%  for  p in posts  %}
-        <li> <a href="{{ path('post', {id:p.getId}) }}">
-                {{ p.getTitle }}</a> by {{ p.getAuthor.getName }}</li>
+        <li>
+            {# post title -> post details #}
+            <a href="{{ path('post', {id:p.getId}) }}"><b>{{ p.getTitle }}</b></a>
+            {# post author -> filter posts by author #}
+            by <a href="{{ path('index', {filterAuthorId:p.getAuthor.getId}) }}">
+            {{ p.getAuthor.getName }}</a>
+            {# tags #}
+            ({% for t in p.getTags %}
+                <a href="{{ path('index', {filterAuthorId:p.getAuthor.getId}) }}">
+                    {{ t.getTitle }}
+                </a>
+            {% endfor %})
+            {# remove this post #}
+            <a href="{{ path('remove', {id:p.getId}) }}">[remove this post]</a>
+        </li>
     {%  endfor %}
     </ul>
 {% endblock %}

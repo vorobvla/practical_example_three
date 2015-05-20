@@ -1,8 +1,13 @@
 {% extends "::base.html.twig" %}
 
 {% block body %}
+    <h3>
+        <a href="{{ path('index') }}">Back To Feed | </a>
+        <a href="{{ path('newPost') }}">Publish New Post</a>
+    </h3>
     <h1>{{ post.getTitle }}</h1>
     <p>By {{ post.getAuthor.getName }}</p>
+    <hr>
     {% if (post.private) %}
         <p>This post is private</p>
     {% endif %}
@@ -21,5 +26,15 @@
             <p>Published till {{ post.publishTo.format(datetime_fmt) }}</p>
     <p>Published from {{ post.publishFrom.format(datetime_fmt) }}</p>
     {% endif %}
+    <hr>
     <p>{{ post.getText }}</p>
+    <hr>
+    <h1>Comments:</h1>
+    {% for c in post.getComments %}
+        <p> <b>{{ c.getAuthor.getName }} :</b>
+        {{ c.getText }}
+        </p>
+    {% endfor %}
+    {{ form(newCommentForm) }}
+
 {% endblock %}

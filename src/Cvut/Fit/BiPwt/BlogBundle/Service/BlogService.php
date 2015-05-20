@@ -64,6 +64,7 @@ class BlogService implements BlogInterface {
         return $this->doctrine->update($post);
     }
 
+    //Bad, not safe implementation
     /**
      * Smaze prispevek
      *
@@ -73,11 +74,18 @@ class BlogService implements BlogInterface {
     public function deletePost(PostInterface $post)
     {
         #eliminating 1:n
-        foreach ($post->getFiles() as $file){
+        $files = $post->getFiles();
+        #if ($files != NULL) {
+        foreach ($files as $file) {
             $this->deleteFile($file);
         }
-        foreach ($post->getComments() as $comment){
-            $this->deleteComment($comment);
+       # }
+
+        $comments = $post->getComments();
+        if (count($comments) > 0) {
+            foreach ($comments as $comment) {
+                //$this->deleteComment($comment);
+            }
         }
         #eliminating n:*
         $post->getAuthor()->removePost($post);
@@ -138,6 +146,11 @@ class BlogService implements BlogInterface {
         if ($parentComment != NULL){
             $parentComment->addChild($comment);
         }
+
+        $ts = new \DateTime("now");
+        $comment->setCreated($ts);
+        $comment->setModified($ts);
+        $comment->setSpam(false);
 
         $this->doctrine->create($comment);
         return $post;
