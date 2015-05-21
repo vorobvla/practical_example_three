@@ -46,11 +46,17 @@ class UserService implements  UserInterface{
      */
     public function create($id, $name)
     {
+        $controlUniq = $this->doctrine->getEm()->getRepository('BlogBundle:User')
+            ->findBy(array('name' => $name));
+
+        if (count($controlUniq) != 0) {
+            return $controlUniq[0];
+        }
+
         $newUser = new User();
         //$newUser->setId($id);
         $newUser->setName($name);
         $newUser->setPassword($this->defPasswd);
-
 
 
         return $this->doctrine->create($newUser);
