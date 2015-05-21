@@ -2,22 +2,31 @@
 
 {% block body %}
     <h2>Welcome to asdasdBlog!</h2>
-    <h3>
-        <a href="{{ path('newPost') }}">Publish New Post</a>
-    </h3>
+    <table>
+        <tr>
+            <td>
+                <h3>
+                    <a href="{{ path('newPost') }}">Publish New Post</a>
+                </h3>
+            </td>
+            <td>
+                {{  form(publishFromTo, {'attr': {'novalidate': 'novalidate'}})  }}
+            </td>
+            </table>
+        </tr>
     <hr/>
     <h2>List of posts</h2>
-    <table border="0">
+    <table>
     {%  for  p in posts  %}
         <tr>
             {# post title -> post details #}
             <td>
-            <a href="{{ path('post', {id:p.getId}) }}"><b>{{ p.getTitle }}</b></a>
+                <a href="{{ path('post', {id:p.getId}) }}"><b>{{ p.getTitle }}</b></a>
             </td>
             {# post author -> filter posts by author #}
             <td>
-            by <a href="{{ path('index', {filterAuthorId:p.getAuthor.getId}) }}">
-            {{ p.getAuthor.getName }}</a>
+                by <a href="{{ path('index', {filterAuthorId:p.getAuthor.getId}) }}">
+                {{ p.getAuthor.getName }}</a>
             </td>
             {# tags #}
             <td>
@@ -27,9 +36,24 @@
                 </a>
             {% endfor %})
             </td>
+            {# Created #}
+            <td>
+                {# p.getCreated.format(datetime_fmt) #}
+            </td>
+            <td>
+                {{ p.getPublishFrom.format(datetime_fmt) }}
+            </td><td> ===
+            </td>
+            <td>
+                {{ p.getPublishTo.format(datetime_fmt) }}
+            </td>
+            {# edit this post #}
+            <td>
+                <a href="{{ path('remove', {id:p.getId}) }}">[edit this post]</a>
+            </td>
             {# remove this post #}
             <td>
-            <a href="{{ path('remove', {id:p.getId}) }}">[remove this post]</a>
+                <a href="{{ path('remove', {id:p.getId}) }}">[remove this post]</a>
             </td>
         </tr>
     {%  endfor %}

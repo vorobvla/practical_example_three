@@ -4,5 +4,5 @@
     <h3>
         <a href="{{ path('index') }}">Back To Feed</a>
     </h3>
-    {{ form(form) }}
+    {{  form(form, {'attr': {'novalidate': 'novalidate'}}) }}
 {% endblock %}

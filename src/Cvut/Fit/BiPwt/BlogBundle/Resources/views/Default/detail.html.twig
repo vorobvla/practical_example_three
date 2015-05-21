@@ -31,7 +31,8 @@
     <hr>
     <h1>Comments:</h1>
     {% for c in post.getComments %}
-        <p> <b>{{ c.getAuthor.getName }} :</b>
+        <p> <b>{{ c.getAuthor.getName }}
+                [ {{ c.getCreated.format(datetime_fmt) }} ]:</b>
         {{ c.getText }}
         </p>
     {% endfor %}
