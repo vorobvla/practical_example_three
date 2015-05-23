@@ -4,6 +4,8 @@
     <h3>
         <a href="{{ path('index') }}">Back To Feed | </a>
         <a href="{{ path('newPost') }}">Publish New Post</a>
+        <a href="{{ path('editPost', {postId:post.getId}) }}">Update This Post</a>
+        <a href="{{ path('removePost', {removeId:post.getId}) }}">Remove This Post</a>
     </h3>
     <h1>{{ post.getTitle }}</h1>
     <p>By {{ post.getAuthor.getName }}</p>
@@ -50,11 +52,11 @@
                 {% endif %}:</b>
         {{ c.getText }}
             <br/>
-            <a href="{{ path('post', {commentIdx:loop.index - 1,
+            <a href="{{ path('postDetails', {commentIdx:loop.index - 1,
                 id:post.getId, commentOption:'answer'}) }}">[Answer]</a>
-            <a href="{{ path('post', {commentIdx:loop.index - 1,
+            <a href="{{ path('postDetails', {commentIdx:loop.index - 1,
                 id:post.getId, commentOption:'edit'}) }}">[Edit]</a>
-            <a href="{{ path('post', {commentIdx:loop.index - 1,
+            <a href="{{ path('postDetails', {commentIdx:loop.index - 1,
                 id:post.getId, commentOption:'remove'}) }}">[Remove]</a>
         </p>
         {% endif %}

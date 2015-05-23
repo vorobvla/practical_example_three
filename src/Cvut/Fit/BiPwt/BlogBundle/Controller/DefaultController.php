@@ -5,11 +5,13 @@ namespace Cvut\Fit\BiPwt\BlogBundle\Controller;
 use Cvut\Fit\BiPwt\BlogBundle\Entity\Comment;
 use Cvut\Fit\BiPwt\BlogBundle\Entity\CommentInterface;
 use Cvut\Fit\BiPwt\BlogBundle\Entity\Post;
+use Cvut\Fit\BiPwt\BlogBundle\Form\Type\PostType;
 use Cvut\Fit\BiPwt\BlogBundle\Form\Type\AnyDateTimePeriod;
 use Doctrine\Common\Collections\Criteria;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DomCrawler\Field;
 use Symfony\Component\Validator\Constraints\DateTime;
@@ -23,6 +25,13 @@ class DefaultController extends Controller
 
     protected function getAnyDateTimeForm(){
         return new AnyDateTimePeriod();
+    }
+
+    protected function getPostForm($post){
+        $builder = $this->createFormBuilder($post);
+        $type = new PostType();
+        $type->buildForm($builder, array());
+        return $builder->getForm();
     }
 
 
@@ -110,11 +119,13 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/newPost", name="newPost")
+     * @Route("/postNew", name="newPost")
      * @Template()
      */
     public function newPostAction(Request $request){
         $post = new Post();
+        $form = $this->getPostForm($post);
+        /*
         $form = $this->createFormBuilder($post)
             ->add('title', 'text')
             ->add('text', 'textarea')
@@ -132,7 +143,7 @@ class DefaultController extends Controller
                 'label' => "Publish Till")
             )
             ->add('Publish', 'submit')
-            ->getForm();
+            ->getForm();*/
 
         $form->handleRequest($request);
         if ($form->isSubmitted()){
@@ -150,11 +161,33 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/removePost/{id}", requirements={"id" = "\d+"}, name="remove")
+     * @Route("/postEdit/{postId}", requirements={"postId" = "\d+"},
+     * name = "editPost")
+     * @Template()
+     * @param Request $request
+     * @param $postId
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function editPostAction(Request $request, $postId){
+        $post = $this->get('cvut_fit_ict_bipwt_blog_service')->findPost($postId);
+        $form = $this->getPostForm($post);
+        $form->handleRequest($request);
+        if ($form->isSubmitted()){
+            $this->get('cvut_fit_ict_bipwt_blog_service')->updatePost($post);
+            return $this->redirectToRoute('index');
+        }
+        return $this->render('@Blog/Default/newPost.html.twig',
+            array('form' => $form->createView())
+        );
+    }
+
+    /**
+     * @Route("/postRemove/{removeId}", requirements={"removeId" = "\d+"},
+     * name="removePost")
      * @Template()
      */
-    public function removePostAction($id){
-        $post = $this->get('cvut_fit_ict_bipwt_blog_service')->findPost($id);
+    public function removePostAction($removeId){
+        $post = $this->get('cvut_fit_ict_bipwt_blog_service')->findPost($removeId);
         $this->get('cvut_fit_ict_bipwt_blog_service')->deletePost($post);
         return $this->redirectToRoute('index');
     }
@@ -170,8 +203,8 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/post/{id}/{commentOption}/{commentIdx}",
-     * requirements={"id" = "\d+", "commentOption"="answer|edit|remove", "commentIdx"="\d+"}, name="post")
+     * @Route("/postDetails/{id}/{commentOption}/{commentIdx}",
+     * requirements={"id" = "\d+", "commentOption"="answer|edit|remove", "commentIdx"="\d+"}, name="postDetails")
      * @Template()
      */
     public function detailAction(Request $request, $id, $commentOption = NULL,
