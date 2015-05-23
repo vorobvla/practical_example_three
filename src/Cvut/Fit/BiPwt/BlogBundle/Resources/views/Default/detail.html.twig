@@ -30,12 +30,41 @@
     <p>{{ post.getText }}</p>
     <hr>
     <h1>Comments:</h1>
-    {% for c in post.getComments %}
+    {% for c in comments %}
+        {% if ((edit['yes'] == true) and (edit['idx'] == loop.index - 1)) %}
+            Your comment
+            {% if answerTo != NULL %}
+                [answer to {{ answerTo.getAuthor.getName }}]
+            {% endif %}:
+            {{ form(newCommentForm) }}
+        {% else %}
+
         <p> <b>{{ c.getAuthor.getName }}
-                [ {{ c.getCreated.format(datetime_fmt) }} ]:</b>
+                [ {{ c.getCreated.format(datetime_fmt) }}
+                {% if c.getModified != c.getCreated %}
+                    , UPD {{ c.getModified.format(datetime_fmt) }}
+                {% endif %}
+                ]
+                {% if c.getParent != NULL %}
+                    [Answer to {{ c.getParent.getAuthor.getName }}]
+                {% endif %}:</b>
         {{ c.getText }}
+            <br/>
+            <a href="{{ path('post', {commentIdx:loop.index - 1,
+                id:post.getId, commentOption:'answer'}) }}">[Answer]</a>
+            <a href="{{ path('post', {commentIdx:loop.index - 1,
+                id:post.getId, commentOption:'edit'}) }}">[Edit]</a>
+            <a href="{{ path('post', {commentIdx:loop.index - 1,
+                id:post.getId, commentOption:'remove'}) }}">[Remove]</a>
         </p>
+        {% endif %}
     {% endfor %}
-    {{ form(newCommentForm) }}
+    {% if (edit['yes'] == false) %}
+        Your comment
+        {% if answerTo != NULL %}
+            [answer to {{ answerTo.getAuthor.getName }}]
+        {% endif %}:
+        {{ form(newCommentForm) }}
+    {% endif %}
 
 {% endblock %}

@@ -3,6 +3,7 @@
 namespace Cvut\Fit\BiPwt\BlogBundle\Controller;
 
 use Cvut\Fit\BiPwt\BlogBundle\Entity\Comment;
+use Cvut\Fit\BiPwt\BlogBundle\Entity\CommentInterface;
 use Cvut\Fit\BiPwt\BlogBundle\Entity\Post;
 use Cvut\Fit\BiPwt\BlogBundle\Form\Type\AnyDateTimePeriod;
 use Doctrine\Common\Collections\Criteria;
@@ -158,40 +159,73 @@ class DefaultController extends Controller
         return $this->redirectToRoute('index');
     }
 
+    private function commentCmp(CommentInterface $c1, CommentInterface $c2){
+        if($c1->getCreated() < $c2->getCreated()){
+            return -1;
+        } elseif ($c1->getCreated() > $c2->getCreated()){
+            return 1;
+        } else{
+            return 0;
+        }
+    }
+
     /**
-     * @Route("/post/{id}", requirements={"id" = "\d+"}, name="post")
+     * @Route("/post/{id}/{commentOption}/{commentIdx}",
+     * requirements={"id" = "\d+", "commentOption"="answer|edit|remove", "commentIdx"="\d+"}, name="post")
      * @Template()
      */
-    public function detailAction($id, Request $request){
+    public function detailAction(Request $request, $id, $commentOption = NULL,
+                                 $commentIdx = NULL){
 
         $post = $this->container
             ->get('cvut_fit_ict_bipwt_blog_service')
             ->findPost($id);
 
-        $newComment = new Comment();
+        $comments = $post->getComments()->toArray();
+        uasort($comments, array($this, "commentCmp"));
+
+        #edit commet or create new?
+        $newComment = ($commentOption == 'edit')?($comments[$commentIdx]):(new Comment());
         $newComment->setAuthor($this->get('cvut_fit_ict_bipwt_user_service')->create(0,
             "Anonymous"));
         $newCommentForm = $this->createFormBuilder($newComment)
             ->add("text", "textarea", array(
-                'label' => 'Your Comment: '
+                'label' => 'Text: '
             ))
-            ->add('Comment', 'submit')
+            ->add('comment', 'submit', array(
+                'label' => 'Comment'))
             ->getForm();
 
+
         $newCommentForm->handleRequest($request);
+        $parent = ($commentOption == 'answer')?($comments[$commentIdx]):(NULL);
 
         if ($newCommentForm->isSubmitted()){
-            $this->get('cvut_fit_ict_bipwt_blog_service')->addComment($post, $newComment);
+            if($commentOption == 'edit'){
+                $this->get('cvut_fit_ict_bipwt_blog_service')->updateComment($newComment);
+            } else {
+                $this->get('cvut_fit_ict_bipwt_blog_service')->addComment($post, $newComment, $parent);
+            }
             return $this->redirectToRoute('post', array('id' => $id));
         }
 
+        if ($commentOption == 'remove'){
+            $this->get('cvut_fit_ict_bipwt_blog_service')->deleteComment($comments[$commentIdx]);
+            return $this->redirectToRoute('post', array('id' => $id));
+        }
 
         return[
             'post' => $post,
+            'comments' => $comments,
             'datetime_fmt' => self::DATETIME_FMT,
-            'newCommentForm' => $newCommentForm->createView()
+            'newCommentForm' => $newCommentForm->createView(),
+            'answerTo' => $parent,
+            //edit or not edit? if yes, where?
+            'edit' => array('yes' => ($commentOption == 'edit')?(true):(false), 'idx' => $commentIdx)
         ];
 
     }
+
+
 
 }

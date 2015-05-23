@@ -26,11 +26,13 @@
             {# post title -> post details #}
             <td>
                 <a href="{{ path('post', {id:p.getId}) }}"><b>{{ p.getTitle }}</b></a>
+                <br>
+                by <a href="{{ path('index', {filterAuthorId:p.getAuthor.getId}) }}">
+                    {{ p.getAuthor.getName }}</a>,
+                {{ p.getCreated.format(datetime_fmt) }}
             </td>
             {# post author -> filter posts by author #}
             <td>
-                by <a href="{{ path('index', {filterAuthorId:p.getAuthor.getId}) }}">
-                {{ p.getAuthor.getName }}</a>
             </td>
             {# tags #}
             <td>
@@ -39,10 +41,6 @@
                     {{ t.getTitle }}
                 </a>
             {% endfor %})
-            </td>
-            {# Created #}
-            <td>
-                {{ p.getCreated.format(datetime_fmt) }}
             </td>
                 {#
             <td>

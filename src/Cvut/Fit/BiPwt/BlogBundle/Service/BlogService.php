@@ -36,8 +36,6 @@ class BlogService implements BlogInterface {
         $this->doctrine = DoctrineDecorators::getInstance();
     }
 
-
-
     /**
      * Vytvori novy prispevek
      *
@@ -62,6 +60,17 @@ class BlogService implements BlogInterface {
     {
         $post->setModified(new \DateTime("now"));
         return $this->doctrine->update($post);
+    }
+
+    /**
+     * update comment
+     * @param CommentInterface $comment
+     * @return mixed
+     */
+    public function updateComment(CommentInterface $comment)
+    {
+        $comment->setModified(new \DateTime("now"));
+        return $this->doctrine->update($comment);
     }
 
     //Bad, not safe implementation
