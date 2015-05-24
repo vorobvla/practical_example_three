@@ -239,12 +239,12 @@ class DefaultController extends Controller
             } else {
                 $this->get('cvut_fit_ict_bipwt_blog_service')->addComment($post, $newComment, $parent);
             }
-            return $this->redirectToRoute('post', array('id' => $id));
+            return $this->redirectToRoute('postDetails', array('id' => $id));
         }
 
         if ($commentOption == 'remove'){
             $this->get('cvut_fit_ict_bipwt_blog_service')->deleteComment($comments[$commentIdx]);
-            return $this->redirectToRoute('post', array('id' => $id));
+            return $this->redirectToRoute('postDetails', array('id' => $id));
         }
 
         return[
