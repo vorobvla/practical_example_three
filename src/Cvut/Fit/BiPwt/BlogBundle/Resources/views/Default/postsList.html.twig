@@ -1,7 +1,14 @@
 {% extends "::base.html.twig" %}
 
 {% block body %}
-    <h2>Welcome to asdasdBlog!</h2>
+    {% if  (user == NULL) %}
+        <h2>Welcome to asdasdBlog!</h2>
+        You are not logged in. Plese, <a href='{{ path('login') }}'> login </a>
+        or <a href="{{ path('register') }}"> register</a>.
+    {% else %}
+        <h2>Hello, {{ user.getName }}!</h2>
+        <a href="{{ path('logout') }}"> Logout </a>
+    {% endif %}
     <table>
         <tr>
             <th>
@@ -14,7 +21,14 @@
             </th>
         </tr>
         <tr>
-            <td></td>
+            <td>
+            {% if (user != NULL) %}
+                <a href="{{ path('logout') }}">Logout</a><br/>
+            {% else %}
+                <a href="{{ path('login') }}">Login</a><br/>
+                <a href="{{ path('register') }}">Register</a><br/>
+            {% endif %}
+            </td>
             <td></td>
             <td>
                 {{  form(publishFromTo, {'attr': {'novalidate': 'novalidate'}})  }}

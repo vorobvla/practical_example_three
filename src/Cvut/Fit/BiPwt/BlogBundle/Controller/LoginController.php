@@ -2,19 +2,21 @@
 
 namespace Cvut\Fit\BiPwt\BlogBundle\Controller;
 
-use Cvut\Fit\BiPwt\BlogBundle\Form\UserType;
+use Cvut\Fit\BiPwt\BlogBundle\Form\Type\RegistrationType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Component\BrowserKit\Request;
+use Cvut\Fit\BiPwt\BlogBundle\Entity\User;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Constraints\Null;
 
-class loginController extends Controller
+class LoginController extends Controller
 {
     /**
      * @Route("/login", name="login")
      * @Template()
      */
-    public function loginAction()
+    public function loginAction(Request $request)
     {
         $authenticationUtils = $this->get('security.authentication_utils');
 
@@ -25,7 +27,7 @@ class loginController extends Controller
         $lastUsername = $authenticationUtils->getLastUsername();
 
         return $this->render(
-            '@Blog/login/login.html.twig',
+            '@Blog/Login/login.html.twig',
             array(
                 // last username entered by the user
                 'last_username' => $lastUsername,
@@ -42,30 +44,26 @@ class loginController extends Controller
     }
 
     /**
-     * @Route("/register", name='user_register')
+     * @Route("/register", name="register")
+     * @Template()
      *
      */
     public function registerAction(Request $request){
         $user = new User();
-        $form = $this->createForm(new UserType(), $user);
-
-        $form -> handleRequest($request);
-
-        if($form->isSubmitted()){
-            $em = $this->get('doctrine')->getManager();
-
-            $encoder = $this->get('security.password_encoder');
-            $encoded = $encoder->encodePassword($user, $user->getPassword());
+        $form = $this->createForm(new RegistrationType(), $user, array());
 
 
-            $user->setPasword($encoded);
+        $form->handleRequest($request);
 
-            $em->persist($user);
-            $em->flush();
+        if ($form->isSubmitted()) {
+            $this->get('cvut_fit_ict_bipwt_user_service')->register($user);
+            return $this->redirectToRoute('index');
         }
 
-        return [
-            'formular' => $form->createView()
-        ];
+
+        return $this->render('@Blog/Login/register.html.twig', array(
+            'form' => $form->createView(),
+            'dbg' => $request,
+        ));
     }
 }

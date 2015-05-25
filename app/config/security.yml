@@ -14,16 +14,20 @@ security:
         default:
             anonymous: ~
             http_basic: ~
+            form_login:
+                login_path: /login
+                check_path: /login_check
+            logout:
+                path:   /logout
+                target: /
+
         dev:
             pattern: ^/(_(profiler|wdt|error)|css|images|js)/
             security: false
-#        secured_area:
-#            logout:
-#                path:   /logout
-#                target: /
+#       secured_area:
 
-    access_control:
-        - {path: ^/, roles: ROLE_USER}
+#    access_control:
+#        - {path: ^/, roles: ROLE_USER}
 
     role_hierarchy:
          ROLE_AUTHOR: ROLE_USER

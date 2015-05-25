@@ -116,6 +116,7 @@ class DefaultController extends Controller
             'posts' => $posts,
             'datetime_fmt' => self::DATETIME_FMT,
             'publishFromTo' => $intervalFormTo->createView(),
+            'user' => $this->getUser(),
         ];
     }
 

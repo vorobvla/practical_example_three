@@ -17,6 +17,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 
 use Doctrine\ORM\EntityManager;
+use Psr\Log\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Container;
 
 class UserService implements  UserInterface{
@@ -39,6 +40,7 @@ class UserService implements  UserInterface{
 
     /**
      * Vytvori a vrati uzivatele
+     * sets default passwd. not safe!
      *
      * @param $id
      * @param $name
@@ -58,8 +60,20 @@ class UserService implements  UserInterface{
         $newUser->setName($name);
         $newUser->setPassword($this->defPasswd);
 
-
         return $this->doctrine->create($newUser);
+    }
+
+    /**
+     * safer?
+     */
+    public function register($user){
+        $controlUniq = $this->doctrine->getEm()->getRepository('BlogBundle:User')
+            ->findBy(array('name' => $user->getName()));
+
+        if (count($controlUniq) != 0) {
+            throw new InvalidArgumentException('User with name "' . $user->getName() . '"already exists');
+        }
+        return $this->doctrine->create($user);
     }
 
     /**

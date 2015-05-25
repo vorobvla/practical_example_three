@@ -1,17 +1,17 @@
 <?php
 
-namespace Cvut\Fit\BiPwt\BlogBundle\Form;
+namespace Cvut\Fit\BiPwt\BlogBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class LoginType extends AbstractType
+class RegistrationType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('username', 'text');
-        $builder->add('password', 'password');
+        $builder->add('name', 'text');
+        $builder->add('password', 'text');
         $builder->add('login', 'submit', array('label' => 'Login'));
     }
 

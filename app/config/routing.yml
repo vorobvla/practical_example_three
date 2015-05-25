@@ -3,6 +3,12 @@ blog:
     type:     annotation
     prefix:   /
 
+authentication:
+    resource: "@BlogBundle/Controller/LoginController.php"
+    type:     annotation
+    prefix:   /
+
+
 logout:
     path:   /logout
 
