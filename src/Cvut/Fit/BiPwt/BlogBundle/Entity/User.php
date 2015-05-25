@@ -2,6 +2,7 @@
 
 namespace Cvut\Fit\BiPwt\BlogBundle\Entity;
 
+use Cvut\Fit\BiPwt\BlogBundle\BlogRoles;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\Role\Role;
 use Symfony\Component\Security\Core\User\UserInterface as CoreUserInterface;
@@ -12,7 +13,7 @@ use Symfony\Component\Security\Core\User\UserInterface as CoreUserInterface;
  * @ORM\Table(name="blog_user")
  * @ORM\Entity
  */
-class User implements UserInterface, CoreUserInterface
+class User implements UserInterface, CoreUserInterface, \Serializable
 {
 
     /**
@@ -42,6 +43,13 @@ class User implements UserInterface, CoreUserInterface
      * mappedBy="author")
      */
     private $posts;
+
+    /**
+     * @var array
+     *
+     * @ORM\Column(name="roles", type="array")
+     */
+    private $roles;
 
     /**
      * Get id
@@ -128,11 +136,17 @@ class User implements UserInterface, CoreUserInterface
      */
     public function getRoles()
     {
-        return [
-            'ROLE_USER'   #autentizovany uzivatel
-        ];
+        return $this->roles;
     }
 
+    public function addRole($role){
+        $this->roles[] = $role;
+        $this->roles = array_unique($this->roles);
+    }
+
+    public function removeRole($role){
+        $this->roles = array_diff($this->roles, array($role));
+    }
     /**
      * Returns the salt that was originally used to encode the password.
      *
@@ -142,7 +156,7 @@ class User implements UserInterface, CoreUserInterface
      */
     public function getSalt()
     {
-
+        return NULL;
     }
 
     /**
@@ -171,6 +185,7 @@ class User implements UserInterface, CoreUserInterface
     public function __construct()
     {
         $this->posts = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->roles = array(BlogRoles::ROLE_USER);
     }
 
     /**
@@ -206,5 +221,26 @@ class User implements UserInterface, CoreUserInterface
     public function getPosts()
     {
         return $this->posts;
+    }
+
+    public function serialize()
+    {
+        return serialize(array(
+            $this->id,
+            $this->name,
+            $this->password,
+            serialize($this->roles)
+        ));
+    }
+
+    public function unserialize($serialized)
+    {
+        list (
+            $this->id,
+            $this->name,
+            $this->password,
+            $tmp,
+        ) = unserialize($serialized);
+        $this->roles = unserialize($tmp);
     }
 }

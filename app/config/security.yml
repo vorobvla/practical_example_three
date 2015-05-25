@@ -1,12 +1,32 @@
 security:
+    encoders:
+        Cvut\Fit\BiPwt\BlogBundle\Entity\User: plaintext
+
     providers:
-        in_memory:
-            memory: ~
+        db_provider:
+            entity:
+                class: BlogBundle:User
+                property: name
+                # if you're using multiple entity managers
+                # manager_name: customer
 
     firewalls:
+        default:
+            anonymous: ~
+            http_basic: ~
         dev:
             pattern: ^/(_(profiler|wdt|error)|css|images|js)/
             security: false
+#        secured_area:
+#            logout:
+#                path:   /logout
+#                target: /
 
-        default:
-            anonymous: ~
+    access_control:
+        - {path: ^/, roles: ROLE_USER}
+
+    role_hierarchy:
+         ROLE_AUTHOR: ROLE_USER
+         ROLE_READER: ROLE_USER
+         ROLE_ADMIN:  ROLE_USER
+

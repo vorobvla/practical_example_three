@@ -8,6 +8,7 @@ use Cvut\Fit\BiPwt\BlogBundle\Entity\Post;
 use Cvut\Fit\BiPwt\BlogBundle\Form\Type\PostType;
 use Cvut\Fit\BiPwt\BlogBundle\Form\Type\AnyDateTimePeriod;
 use Doctrine\Common\Collections\Criteria;
+use Proxies\__CG__\Cvut\Fit\BiPwt\BlogBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -15,7 +16,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DomCrawler\Field;
 use Symfony\Component\Validator\Constraints\DateTime;
-
+use Symfony\Component\Validator\Tests\Fixtures\Entity;
 
 
 class DefaultController extends Controller
@@ -148,8 +149,7 @@ class DefaultController extends Controller
         $form->handleRequest($request);
         if ($form->isSubmitted()){
             if ($post->getAuthor() == NULL) {
-                $post->setAuthor($this->get('cvut_fit_ict_bipwt_user_service')->create(0,
-                    "Anonymous"));
+                $post->setAuthor($this->getUser());
             }
             $this->get('cvut_fit_ict_bipwt_blog_service')->createPost($post);
             return $this->redirectToRoute('index');
@@ -219,8 +219,7 @@ class DefaultController extends Controller
 
         #edit commet or create new?
         $newComment = ($commentOption == 'edit')?($comments[$commentIdx]):(new Comment());
-        $newComment->setAuthor($this->get('cvut_fit_ict_bipwt_user_service')->create(0,
-            "Anonymous"));
+        $newComment->setAuthor($this->getUser());
         $newCommentForm = $this->createFormBuilder($newComment)
             ->add("text", "textarea", array(
                 'label' => 'Text: '
