@@ -3,9 +3,12 @@
 {% block body %}
     <h3>
         <a href="{{ path('index') }}">Back To Feed | </a>
-        <a href="{{ path('newPost') }}">Publish New Post</a>
-        <a href="{{ path('editPost', {postId:post.getId}) }}">Update This Post</a>
-        <a href="{{ path('removePost', {removeId:post.getId}) }}">Remove This Post</a>
+        {% if ((is_granted('ROLE_ADMIN')) or
+            ((is_granted('ROLE_AUTHOR')) and (app.user == post.getAuthor)))%}
+                <a href="{{ path('newPost') }}">Publish New Post</a>
+                <a href="{{ path('editPost', {postId:post.getId}) }}">Update This Post</a>
+                <a href="{{ path('removePost', {removeId:post.getId}) }}">Remove This Post</a>
+        {% endif %}
     </h3>
     <h1>{{ post.getTitle }}</h1>
     <p>By {{ post.getAuthor.getName }}</p>
@@ -52,12 +55,18 @@
                 {% endif %}:</b>
         {{ c.getText }}
             <br/>
-            <a href="{{ path('postDetails', {commentIdx:loop.index - 1,
-                id:post.getId, commentOption:'answer'}) }}">[Answer]</a>
-            <a href="{{ path('postDetails', {commentIdx:loop.index - 1,
-                id:post.getId, commentOption:'edit'}) }}">[Edit]</a>
-            <a href="{{ path('postDetails', {commentIdx:loop.index - 1,
-                id:post.getId, commentOption:'remove'}) }}">[Remove]</a>
+            {% if (is_granted('ROLE_READER')) %}
+                <a href="{{ path('postDetails', {commentIdx:loop.index - 1,
+                    id:post.getId, commentOption:'answer'}) }}">[Answer]</a>
+            {% endif %}
+            {% if ((is_granted('ROLE_ADMIN')) or
+                    ((is_granted('ROLE_AUTHOR')) and (app.user == post.getAuthor))
+            )%}
+                <a href="{{ path('postDetails', {commentIdx:loop.index - 1,
+                    id:post.getId, commentOption:'edit'}) }}">[Edit]</a>
+                <a href="{{ path('postDetails', {commentIdx:loop.index - 1,
+                    id:post.getId, commentOption:'remove'}) }}">[Remove]</a>
+            {% endif %}
         </p>
         {% endif %}
     {% endfor %}

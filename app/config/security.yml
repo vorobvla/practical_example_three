@@ -26,11 +26,13 @@ security:
             security: false
 #       secured_area:
 
-#    access_control:
-#        - {path: ^/, roles: ROLE_USER}
+    access_control:
+        - { path: ^/((postNew)|(postEdit)|(postRemove)), roles: ROLE_AUTHOR }
+        - { path: ^/postDetails/\d+/(edit|remove), roles: ROLE_AUTHOR }
+        - { path: ^/postDetails/\d+/answer, roles: ROLE_READER}
 
     role_hierarchy:
          ROLE_AUTHOR: ROLE_USER
          ROLE_READER: ROLE_USER
-         ROLE_ADMIN:  ROLE_USER
+         ROLE_ADMIN:  ROLE_USER, ROLE_AUTHOR, ROLE_READER
 

@@ -3,6 +3,7 @@
 namespace Cvut\Fit\BiPwt\BlogBundle\Controller;
 
 use Cvut\Fit\BiPwt\BlogBundle\Form\Type\RegistrationType;
+use Cvut\Fit\BiPwt\BlogBundle\Form\Type\RoleType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -51,11 +52,16 @@ class LoginController extends Controller
     public function registerAction(Request $request){
         $user = new User();
         $form = $this->createForm(new RegistrationType(), $user, array());
-
+     #   $form = $this->createForm(new RoleType());
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
+         /*   $data = $form->getData();
+            return  $this->render('@Blog/Login/register.html.twig', array(
+                'form' => $form->createView(),
+                #'dbg' => $data['roles'],
+            ));*/
             $this->get('cvut_fit_ict_bipwt_user_service')->register($user);
             return $this->redirectToRoute('index');
         }

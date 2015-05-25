@@ -1,12 +1,12 @@
 {% extends "::base.html.twig" %}
 
 {% block body %}
-    {% if  (user == NULL) %}
+    {% if  (app.user == NULL) %}
         <h2>Welcome to asdasdBlog!</h2>
         You are not logged in. Plese, <a href='{{ path('login') }}'> login </a>
         or <a href="{{ path('register') }}"> register</a>.
     {% else %}
-        <h2>Hello, {{ user.getName }}!</h2>
+        <h2>Hello, {{ app.user.getName }}!</h2>
         <a href="{{ path('logout') }}"> Logout </a>
     {% endif %}
     <table>
@@ -14,7 +14,9 @@
             <th>
                 <a href="{{ path('index') }}">Back To Starting Page</a>
             </th><th>
-                <a href="{{ path('newPost') }}">Publish New Post</a>
+                {% if (is_granted('ROLE_AUTHOR')) %}
+                    <a href="{{ path('newPost') }}">Publish New Post</a>
+                {% endif %}
             </th>
             <th>
                 Show due date for publish
@@ -22,7 +24,7 @@
         </tr>
         <tr>
             <td>
-            {% if (user != NULL) %}
+            {% if (is_granted('ROLE_USER')) %}
                 <a href="{{ path('logout') }}">Logout</a><br/>
             {% else %}
                 <a href="{{ path('login') }}">Login</a><br/>
@@ -39,46 +41,52 @@
     <h2>List of posts</h2>
     <table>
     {%  for  p in posts  %}
-        <tr>
-            {# post title -> post details #}
-            <td>
-                <a href="{{ path('postDetails', {id:p.getId}) }}"><b>{{ p.getTitle }}</b></a>
-                <br>
-                {% if (p.getPrivate == true)%}
-                    private post
+        {% if (not(is_granted('ROLE_READER')) and (p.getPrivate == true)) %}
+        {% else %}
+            <tr>
+                {# post title -> post details #}
+                <td>
+                    <a href="{{ path('postDetails', {id:p.getId}) }}"><b>{{ p.getTitle }}</b></a>
+                    <br>
+                    {% if (p.getPrivate == true)%}
+                        private post
+                    {% endif %}
+                    by <a href="{{ path('index', {filterAuthorId:p.getAuthor.getId}) }}">
+                        {{ p.getAuthor.getName }}</a>,
+                    {{ p.getCreated.format(datetime_fmt) }}
+                </td>
+                {# post author -> filter posts by author #}
+                <td>
+                </td>
+                {# tags #}
+                <td>
+                ({% for t in p.getTags %}
+                    <a href="{{ path('index', {filterAuthorId:p.getAuthor.getId}) }}">
+                        {{ t.getTitle }}
+                    </a>
+                {% endfor %})
+                </td>
+                    {#
+                <td>
+                    {{ p.getPublishFrom.format(datetime_fmt) }}
+                </td><td> ===
+                </td>
+                <td>
+                    {{ p.getPublishTo.format(datetime_fmt) }}
+                </td>#}
+                {# edit this post #}
+                {% if ((is_granted('ROLE_ADMIN')) or
+                        ((is_granted('ROLE_AUTHOR')) and (app.user == p.getAuthor)))%}
+                    <td>
+                        <a href="{{ path('editPost', {postId:p.getId}) }}">[edit this post]</a>
+                    </td>
+                    {# remove this post #}
+                    <td>
+                        <a href="{{ path('removePost', {removeId:p.getId}) }}">[remove this post]</a>
+                    </td>
                 {% endif %}
-                by <a href="{{ path('index', {filterAuthorId:p.getAuthor.getId}) }}">
-                    {{ p.getAuthor.getName }}</a>,
-                {{ p.getCreated.format(datetime_fmt) }}
-            </td>
-            {# post author -> filter posts by author #}
-            <td>
-            </td>
-            {# tags #}
-            <td>
-            ({% for t in p.getTags %}
-                <a href="{{ path('index', {filterAuthorId:p.getAuthor.getId}) }}">
-                    {{ t.getTitle }}
-                </a>
-            {% endfor %})
-            </td>
-                {#
-            <td>
-                {{ p.getPublishFrom.format(datetime_fmt) }}
-            </td><td> ===
-            </td>
-            <td>
-                {{ p.getPublishTo.format(datetime_fmt) }}
-            </td>#}
-            {# edit this post #}
-            <td>
-                <a href="{{ path('editPost', {postId:p.getId}) }}">[edit this post]</a>
-            </td>
-            {# remove this post #}
-            <td>
-                <a href="{{ path('removePost', {removeId:p.getId}) }}">[remove this post]</a>
-            </td>
-        </tr>
+            </tr>
+        {% endif %}
     {%  endfor %}
     </table>
 

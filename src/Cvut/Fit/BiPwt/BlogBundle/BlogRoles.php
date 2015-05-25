@@ -10,7 +10,7 @@ namespace Cvut\Fit\BiPwt\BlogBundle;
 
 
 abstract class BlogRoles{
-    const ROLE_ANON = 'ROLE_ANON';  #nonautorised
+#    const ROLE_ANON = 'ROLE_ANON';  #nonautorised
     const ROLE_USER = 'ROLE_USER';  #autorised
     const ROLE_AUTHOR = 'ROLE_AUTHOR';  #author
     const ROLE_READER = 'ROLE_READER';  #reader

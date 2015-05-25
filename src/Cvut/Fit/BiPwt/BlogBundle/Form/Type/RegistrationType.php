@@ -2,6 +2,7 @@
 
 namespace Cvut\Fit\BiPwt\BlogBundle\Form\Type;
 
+use Cvut\Fit\BiPwt\BlogBundle\BlogRoles;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -12,7 +13,8 @@ class RegistrationType extends AbstractType
     {
         $builder->add('name', 'text');
         $builder->add('password', 'text');
-        $builder->add('login', 'submit', array('label' => 'Login'));
+        $builder->add('roles', new RoleType());
+        $builder->add('login', 'submit', array('label' => 'Register'));
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

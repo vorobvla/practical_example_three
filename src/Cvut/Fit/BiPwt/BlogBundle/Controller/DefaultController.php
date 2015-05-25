@@ -2,6 +2,7 @@
 
 namespace Cvut\Fit\BiPwt\BlogBundle\Controller;
 
+use Cvut\Fit\BiPwt\BlogBundle\BlogRoles;
 use Cvut\Fit\BiPwt\BlogBundle\Entity\Comment;
 use Cvut\Fit\BiPwt\BlogBundle\Entity\CommentInterface;
 use Cvut\Fit\BiPwt\BlogBundle\Entity\Post;
@@ -9,12 +10,14 @@ use Cvut\Fit\BiPwt\BlogBundle\Form\Type\PostType;
 use Cvut\Fit\BiPwt\BlogBundle\Form\Type\AnyDateTimePeriod;
 use Doctrine\Common\Collections\Criteria;
 use Proxies\__CG__\Cvut\Fit\BiPwt\BlogBundle\Entity\User;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DomCrawler\Field;
+use Symfony\Component\Security\Acl\Exception\Exception;
 use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Validator\Tests\Fixtures\Entity;
 
@@ -116,36 +119,17 @@ class DefaultController extends Controller
             'posts' => $posts,
             'datetime_fmt' => self::DATETIME_FMT,
             'publishFromTo' => $intervalFormTo->createView(),
-            'user' => $this->getUser(),
         ];
     }
 
     /**
      * @Route("/postNew", name="newPost")
+     * @Security("has_role('ROLE_AUTHOR')")
      * @Template()
      */
     public function newPostAction(Request $request){
         $post = new Post();
         $form = $this->getPostForm($post);
-        /*
-        $form = $this->createFormBuilder($post)
-            ->add('title', 'text')
-            ->add('text', 'textarea')
-            ->add('files', 'collection', array(
-                'type' => 'file',
-                'label' => "Attachment",
-                'allow_add' => true,
-                'allow_delete' => true)
-            )
-            ->add('private', 'checkbox', array(
-                'label' => "Publish As Private Post")
-            )
-            ->add('publishFrom', 'datetime')
-            ->add('publishTo', 'datetime', array(
-                'label' => "Publish Till")
-            )
-            ->add('Publish', 'submit')
-            ->getForm();*/
 
         $form->handleRequest($request);
         if ($form->isSubmitted()){
@@ -164,13 +148,17 @@ class DefaultController extends Controller
     /**
      * @Route("/postEdit/{postId}", requirements={"postId" = "\d+"},
      * name = "editPost")
-     * @Template()
+     * @Security("has_role('ROLE_AUTHOR')")
      * @param Request $request
      * @param $postId
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function editPostAction(Request $request, $postId){
         $post = $this->get('cvut_fit_ict_bipwt_blog_service')->findPost($postId);
+        if ((!$this->isGranted(BlogRoles::ROLE_ADMIN))
+                and ($post->getAuthor() != $this->getUser())){
+            throw $this->createAccessDeniedException('Sorry, you are not authorized to edit this post');
+        }
         $form = $this->getPostForm($post);
         $form->handleRequest($request);
         if ($form->isSubmitted()){
@@ -185,9 +173,14 @@ class DefaultController extends Controller
     /**
      * @Route("/postRemove/{removeId}", requirements={"removeId" = "\d+"},
      * name="removePost")
-     * @Template()
+     * @Security("has_role('ROLE_AUTHOR')")
      */
     public function removePostAction($removeId){
+        $post = $this->get('cvut_fit_ict_bipwt_blog_service')->findPost($removeId);
+        if ((!$this->isGranted(BlogRoles::ROLE_ADMIN))
+            and ($post->getAuthor() != $this->getUser())){
+            throw $this->createAccessDeniedException('Sorry, you are not authorized to delete this post');
+        }
         $post = $this->get('cvut_fit_ict_bipwt_blog_service')->findPost($removeId);
         $this->get('cvut_fit_ict_bipwt_blog_service')->deletePost($post);
         return $this->redirectToRoute('index');
@@ -207,6 +200,7 @@ class DefaultController extends Controller
      * @Route("/postDetails/{id}/{commentOption}/{commentIdx}",
      * requirements={"id" = "\d+", "commentOption"="answer|edit|remove", "commentIdx"="\d+"}, name="postDetails")
      * @Template()
+     * @Security("has_role('ROLE_READER')")
      */
     public function detailAction(Request $request, $id, $commentOption = NULL,
                                  $commentIdx = NULL){
@@ -214,6 +208,16 @@ class DefaultController extends Controller
         $post = $this->container
             ->get('cvut_fit_ict_bipwt_blog_service')
             ->findPost($id);
+
+        #check if the author is allowed to edit and remove posts
+        if (($commentOption=='edit') and (!$this->isGranted(BlogRoles::ROLE_ADMIN))
+            and ($this->getUser() != $post->getAuthor())){
+            throw new Exception('Sorry, you are not authorized to edit this comment');
+        }
+        if (($commentOption=='remove') and (!$this->isGranted(BlogRoles::ROLE_ADMIN))
+            and ($this->getUser() != $post->getAuthor())){
+            throw new Exception('Sorry, you are not authorized to remove this comment');
+        }
 
         $comments = $post->getComments()->toArray();
         uasort($comments, array($this, "commentCmp"));
@@ -237,6 +241,9 @@ class DefaultController extends Controller
             if($commentOption == 'edit'){
                 $this->get('cvut_fit_ict_bipwt_blog_service')->updateComment($newComment);
             } else {
+                if (!$this->isGranted(BlogRoles::ROLE_READER)){
+                    throw new Exception('Sorry, you are not authorized to publish comments.');
+                }
                 $this->get('cvut_fit_ict_bipwt_blog_service')->addComment($post, $newComment, $parent);
             }
             return $this->redirectToRoute('postDetails', array('id' => $id));
