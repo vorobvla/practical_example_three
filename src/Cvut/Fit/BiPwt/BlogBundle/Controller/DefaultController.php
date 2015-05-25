@@ -31,13 +31,6 @@ class DefaultController extends Controller
         return new AnyDateTimePeriod();
     }
 
-    protected function getPostForm($post){
-        $builder = $this->createFormBuilder($post);
-        $type = new PostType();
-        $type->buildForm($builder, array());
-        return $builder->getForm();
-    }
-
 
     /**
      * @Route("/{filterAuthorId}/{filterTagId}/{filterPublishedFrom}/{filterPublishedTill}",
@@ -129,7 +122,7 @@ class DefaultController extends Controller
      */
     public function newPostAction(Request $request){
         $post = new Post();
-        $form = $this->getPostForm($post);
+        $form = $this->createForm(new PostType(), $post);
 
         $form->handleRequest($request);
         if ($form->isSubmitted()){
@@ -159,7 +152,7 @@ class DefaultController extends Controller
                 and ($post->getAuthor() != $this->getUser())){
             throw $this->createAccessDeniedException('Sorry, you are not authorized to edit this post');
         }
-        $form = $this->getPostForm($post);
+        $form = $this->createForm(new PostType(), $post);
         $form->handleRequest($request);
         if ($form->isSubmitted()){
             $this->get('cvut_fit_ict_bipwt_blog_service')->updatePost($post);

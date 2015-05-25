@@ -31,7 +31,7 @@ class Tag implements TagInterface
     private $title;
 
     /**
-     * @var \stdClass
+     * @var array
      *
      * @ORM\ManyToMany(targetEntity="Cvut\Fit\BiPwt\BlogBundle\Entity\Post",
      * inversedBy="tags")
