@@ -62,6 +62,7 @@ class LoginController extends Controller
                 'form' => $form->createView(),
                 #'dbg' => $data['roles'],
             ));*/
+            $user->setPassword($this->get('security.password_encoder')->encodePassword($user, $user->getPassword()));
             $this->get('cvut_fit_ict_bipwt_user_service')->register($user);
             return $this->redirectToRoute('index');
         }

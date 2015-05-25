@@ -1,6 +1,6 @@
 security:
     encoders:
-        Cvut\Fit\BiPwt\BlogBundle\Entity\User: plaintext
+        Cvut\Fit\BiPwt\BlogBundle\Entity\User: md5
 
     providers:
         db_provider:
