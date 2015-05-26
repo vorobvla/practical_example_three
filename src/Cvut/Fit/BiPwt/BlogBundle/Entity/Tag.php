@@ -34,7 +34,7 @@ class Tag implements TagInterface
      * @var array
      *
      * @ORM\ManyToMany(targetEntity="Cvut\Fit\BiPwt\BlogBundle\Entity\Post",
-     * inversedBy="tags")
+     * mappedBy="tags")
      */
     private $posts;
 

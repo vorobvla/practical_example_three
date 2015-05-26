@@ -98,7 +98,10 @@ class Post implements PostInterface
      * @var array
      *
      * @ORM\ManyToMany(targetEntity="Cvut\Fit\BiPwt\BlogBundle\Entity\Tag",
-     * mappedBy="posts")
+     * inversedBy="posts")
+     * @ORM\JoinTable(name="post_tags",
+     * joinColumns={@ORM\JoinColumn(name="post_id", referencedColumnName="id")},
+     * inverseJoinColumns={@ORM\JoinColumn(name="column_id", referencedColumnName="id")})
      */
     private $tags;
 
