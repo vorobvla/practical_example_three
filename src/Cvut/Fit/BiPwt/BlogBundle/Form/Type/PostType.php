@@ -31,7 +31,12 @@ class PostType extends AbstractType{
             ->add('publishFrom', 'datetime')
             ->add('publishTo', 'datetime', array(
                     'label' => "Publish Till")
-            )
+            )/*
+            ->add('files', 'collection', array(
+                'type' => new FileType(),
+                'data_class'=> 'Cvut\Fit\BiPwt\BlogBundle\Entity\File'
+            ))*/
+
             ->add('Publish', 'submit');
     }
 

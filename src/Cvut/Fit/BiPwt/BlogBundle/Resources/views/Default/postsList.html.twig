@@ -31,7 +31,7 @@
                 <a href="{{ path('register') }}">Register</a><br/>
             {% endif %}
             </td>
-            <td></td>
+            <td>{{ form(filterForm) }}</td>
             <td>
                 {{  form(publishFromTo, {'attr': {'novalidate': 'novalidate'}})  }}
             </td>
@@ -61,7 +61,7 @@
                 {# tags #}
                 <td>
                 ({% for t in p.getTags %}
-                    <a href="{{ path('index', {filterAuthorId:p.getAuthor.getId}) }}">
+                    <a href="{{ path('index', {filterTagId:t.getId}) }}">
                         {{ t.getTitle }}
                     </a>
                 {% endfor %})

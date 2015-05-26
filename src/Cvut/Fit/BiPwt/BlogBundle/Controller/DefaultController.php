@@ -6,6 +6,8 @@ use Cvut\Fit\BiPwt\BlogBundle\BlogRoles;
 use Cvut\Fit\BiPwt\BlogBundle\Entity\Comment;
 use Cvut\Fit\BiPwt\BlogBundle\Entity\CommentInterface;
 use Cvut\Fit\BiPwt\BlogBundle\Entity\Post;
+use Cvut\Fit\BiPwt\BlogBundle\Form\Type\CommentType;
+use Cvut\Fit\BiPwt\BlogBundle\Form\Type\FiltersType;
 use Cvut\Fit\BiPwt\BlogBundle\Form\Type\PostType;
 use Cvut\Fit\BiPwt\BlogBundle\Form\Type\AnyDateTimePeriod;
 use Doctrine\Common\Collections\Criteria;
@@ -34,7 +36,7 @@ class DefaultController extends Controller
 
     /**
      * @Route("/{filterAuthorId}/{filterTagId}/{filterPublishedFrom}/{filterPublishedTill}",
-     * requirements={"filterAuthorId" = "\d+","filterTagId" = "\d+",
+     * requirements={"filterAuthorId" = "(\d+|null)","filterTagId" = "(\d+|null)",
      * "filterPublishedFrom" = "\datetime", "filterPublishedTill" = "\datetime"},
      * name="index")
      * @Template()
@@ -42,8 +44,8 @@ class DefaultController extends Controller
      * @return array
      */
     public function postsListAction(Request $request,
-                                    $filterAuthorId = NULL,
-                                    $filterTagId = NULL, $filterPublishedFrom = NULL,
+                                    $filterAuthorId = 'null',
+                                    $filterTagId = 'null', $filterPublishedFrom = NULL,
                                     $filterPublishedTill = NULL)
     {
         //TODO: finish one critetia where author and tags?
@@ -51,7 +53,7 @@ class DefaultController extends Controller
 
         $criteria = new Criteria();
         $criteria->orderBy(array('created'=>Criteria::DESC));
-        if ($filterAuthorId != NULL){
+        if ($filterAuthorId != 'null'){
             #filter by author
             #$posts = $this->container->get('cvut_fit_ict_bipwt_user_service')
             #    ->find($filterAuthorId)->getPosts();
@@ -61,13 +63,13 @@ class DefaultController extends Controller
                 ->find($filterAuthorId)
             ));
         }
-        if ($filterTagId != NULL){
+        if ($filterTagId != 'null'){
             #filter by tag
             #$posts = $this->container->get('cvut_fit_ict_bipwt_blog_service')
             #    ->getPosts();
             $criteria->andWhere(Criteria::expr()->contains(
                 'tags',
-                $this->container->get('cvut_fit_ict_bipwt_user_service')
+                $this->container->get('cvut_fit_ict_bipwt_blog_service')
                 ->findTag($filterTagId)
             ));
         }
@@ -90,7 +92,11 @@ class DefaultController extends Controller
                 'label'=>'Till date: ', 'data'=>$then))
             ->add('submit', 'submit', array('label'=>'Filter'))
             ->getForm();
-
+        $filterForm = $this->createForm(new FiltersType( array(
+                'authors' => $this->get('cvut_fit_ict_bipwt_user_service')->findAll()->toArray(),
+                'tags' => $this->get('cvut_fit_ict_bipwt_blog_service')->findAllTags()->toArray())
+            )
+        );
         $intervalFormTo->handleRequest($request);
         $data = $intervalFormTo->getData();
         //TODO add validation of date (from date < till date)
@@ -112,6 +118,7 @@ class DefaultController extends Controller
             'posts' => $posts,
             'datetime_fmt' => self::DATETIME_FMT,
             'publishFromTo' => $intervalFormTo->createView(),
+            'filterForm' => $filterForm->createView()
         ];
     }
 
@@ -218,13 +225,7 @@ class DefaultController extends Controller
         #edit commet or create new?
         $newComment = ($commentOption == 'edit')?($comments[$commentIdx]):(new Comment());
         $newComment->setAuthor($this->getUser());
-        $newCommentForm = $this->createFormBuilder($newComment)
-            ->add("text", "textarea", array(
-                'label' => 'Text: '
-            ))
-            ->add('comment', 'submit', array(
-                'label' => 'Comment'))
-            ->getForm();
+        $newCommentForm = $this->createForm(new CommentType(), $newComment);
 
 
         $newCommentForm->handleRequest($request);

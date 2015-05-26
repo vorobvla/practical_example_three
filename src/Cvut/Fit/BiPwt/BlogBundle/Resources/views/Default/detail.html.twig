@@ -31,6 +31,11 @@
             <p>Published till {{ post.publishTo.format(datetime_fmt) }}</p>
     <p>Published from {{ post.publishFrom.format(datetime_fmt) }}</p>
     {% endif %}
+    {% if (not post.getTags.empty) %}
+        Tags: {% for t in post.getTags %}
+            <a href=""> {{ t.getTitle }}  </a>
+        {% endfor %}
+    {% endif %}
     <hr>
     <p>{{ post.getText }}</p>
     <hr>
