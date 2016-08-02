@@ -3,7 +3,7 @@
 {% block body %}
     {% if  (app.user == NULL) %}
         <h2>Welcome to asdasdBlog!</h2>
-        You are not logged in. Plese, <a href='{{ path('login') }}'> login </a>
+        You are not logged in. Please, <a href='{{ path('login') }}'> login </a>
         or <a href="{{ path('register') }}"> register</a>.
     {% else %}
         <h2>Hello, {{ app.user.getName }}!</h2>
