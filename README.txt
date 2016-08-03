@@ -1,5 +1,5 @@
 ======================== README FOR ASDASDBLOG ===========================
-============== (task for Networking and Automatic Testing) ===============
+=============== (task for Business and Web Technologies) =================
 ======================== by Vladimir Vorobyev ============================
 
 This  folder contains my solution of the final task of Web Technologies course I attended at the Czech Technological University in Prague (CTU). The task was  designed by  the team of the course's teachers (Ing. V. Jirkovský and others).
