@@ -1,0 +1,21 @@
+textarea {
+    min-width: 200px;
+    max-width: 800px;   
+    height: 250px;
+    resize: none;
+}
+
+#cvut_fit_bipwt_blogbundle_comment_text{ 
+    height: 50px;
+}
+
+button {
+    margin-top: 25px;
+    border: 2px solid crimson;
+    background-color: #fde8ec;
+    font-size: 150%;
+}
+
+button:hover {
+    background-color: crimson;
+}

@@ -4,7 +4,16 @@
         <meta charset="UTF-8" />
         <title>{% block title %}asdasdBlog{% endblock %}</title>
         {% block stylesheets %}{% endblock %}
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+        <link rel="icon" type="image/x-icon" href="{{ asset('blog_icon.png') }}" />       
+        
+        {% stylesheets 'css/default.css' %}
+            <link rel="stylesheet" href="{{ asset_url }}" />
+        {% endstylesheets %}
+        
+        {% block head %}
+        {% endblock %}
+        
+
     </head>
     <body>
         {% block body %}{% endblock %}

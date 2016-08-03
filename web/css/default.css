@@ -31,7 +31,10 @@ a:active {
 }
 
 
-.centerForm {
-    text-align: center;    
-}
 
+label, button, input, select, textarea {
+    margin: 5px; 
+    font-size: large; 
+    vertical-align: top;
+    width: auto;
+}

@@ -1,0 +1,10 @@
+{% extends "::base.html.twig" %}
+
+{% block head %}
+        
+        {% stylesheets 'css/logReg.css' 
+            filter='cssrewrite' output='css/compiled/app.css'%}
+            <link rel="stylesheet" href="{{ asset_url }}" />
+        {% endstylesheets %}       
+
+{% endblock %}
